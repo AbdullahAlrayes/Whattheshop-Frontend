@@ -8,6 +8,7 @@ import Login from "./Login";
 import Profile from "./Profile";
 import Lol from "./Lol";
 import PrivateLul from "./PrivateLul";
+import addProduct from "./AddProducts/addProducts";
 
 // Router
 import { Route, Switch, Redirect } from "react-router-native";
@@ -20,6 +21,7 @@ class MainContent extends Component {
     return (
       <Content>
         <Switch>
+          <Route path="/addProduct" component={addProduct} />
           <Route path="/lol" component={Lol} />
           <PrivateRoute path="/privateLul" component={PrivateLul} />
           <PrivateRoute path="/profile" component={Profile} />

@@ -6,6 +6,8 @@ import { I18nManager } from "react-native";
 import MainContent from "./components/MainContent";
 import MainHeader from "./components/MainHeader";
 import MainFooter from "./components/MainFooter";
+import MyHeader from "./components/Header/Header";
+import MyFooter from "./components/Footer/Footer";
 
 // NativeBase
 import { Root, Container } from "native-base";
@@ -49,9 +51,9 @@ class App extends Component {
       <Root>
         <NativeRouter>
           <Container>
-            <MainHeader />
+            <MyHeader />
             <MainContent />
-            <MainFooter />
+            <MyFooter />
           </Container>
         </NativeRouter>
       </Root>
