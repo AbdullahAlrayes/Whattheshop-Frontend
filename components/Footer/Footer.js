@@ -15,7 +15,7 @@ class MyFooter extends Component {
             <Icon type="Entypo" name="plus" />
             <Text>Add Item</Text>
           </Link>
-          <Link component={Button} verticle to="/privateLul">
+          <Link component={Button} verticle to="/productList">
             <Icon name="home" type="Entypo" />
             <Text>My Items</Text>
           </Link>

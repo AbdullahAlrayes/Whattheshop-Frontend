@@ -7,8 +7,12 @@ import {
   Item,
   Radio,
   Button,
+  Body,
   ListItem,
   Left,
+  SwipeRow,
+  List,
+  ActionSheet,
   Icon,
   Right,
   Picker,
@@ -17,110 +21,68 @@ import {
   View
 } from "native-base";
 import { Image } from "react-native";
+import { observer } from "mobx-react";
+import { NativeRouter, Route, Link, Switch } from "react-router-native";
+import { ListView } from "react-native";
+
+//Options:
+var BUTTONS = ["Yes, Delete!", "Cancel"];
+var DESTRUCTIVE_INDEX = 0;
+var CANCEL_INDEX = 1;
 
 //Import Add Product Store
-import ProductStore from "../Store/AddProduct";
+import newProduct from "../Store/AddProduct";
 
-export default class addProduct extends Component {
+//Import Components
+import TagList from "./addTags";
+import ProductDetail from "../ProductDetail/ProductDetail";
+import ProductStore from "../Store/ProductStore";
+
+class addProduct extends Component {
   constructor(props) {
     super(props);
+    this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     this.state = {
-      name: "",
-      description: "",
-      status: "Available",
-      type: "",
-      tag: [],
-      tag1: "",
-      tag2: "",
-      tag3: "",
-      price: "",
-      type: "Available",
-      tagCounter: 0,
-      imageurl: ""
+      name: newProduct.name,
+      description: newProduct.description,
+      status: newProduct.status,
+      type: newProduct.type,
+      tag: newProduct.tag,
+      tag1: newProduct.tag1,
+      tag2: newProduct.tag2,
+      tag3: newProduct.tag3,
+      price: newProduct.price,
+      type: newProduct.type,
+      tagCounter: newProduct.tagCounter,
+      pic: newProduct.pic,
+      clicked: 1,
+      selectedTag: undefined
     };
   }
-  nameChange(value: string) {
-    this.setState({
-      name: value
-    });
-  }
-  descriptionChange(value: string) {
-    this.setState({
-      description: value
-    });
-  }
-  statusChange(value: string) {
-    this.setState({
-      status: value
-    });
-  }
-  priceChange(value: string) {
-    this.setState({
-      price: value
-    });
-  }
-  typeChange(value: string) {
-    this.setState({
-      type: value
-    });
-  }
-  tag1Change(value: string) {
-    this.setState({
-      tag1: value
-    });
-  }
-  tag2Change(value: string) {
-    this.setState({
-      tag2: value
-    });
-  }
-  tag3Change(value: string) {
-    this.setState({
-      tag3: value
-    });
-  }
 
-  imageChange(value: string) {
-    this.setState({
-      imageurl: value
-    });
-    console.log(this.state.imageurl);
-  }
-  tagChange(value: string) {
-    this.setState({
-      tagCounter: this.state.tagCounter + 1
-    });
-    console.log(this.state.tagCounter);
-  }
-  submitButton() {
-    this.setState({ tag: [] });
-    if (this.state.tag1.length > 0) {
-      this.state.tag.push(this.state.tag1);
+  componentDidUpdate() {
+    if (this.state.clicked === "Yes, Delete!") {
+      newProduct.removeTag(this.state.selectedTag);
+      this.setState({
+        clicked: undefined,
+        selectedTag: undefined
+      });
     }
-    if (this.state.tag2.length > 0) {
-      this.state.tag.push(this.state.tag2);
-    }
-    if (this.state.tag3.length > 0) {
-      this.state.tag.push(this.state.tag3);
-    }
-
-    console.log("Product Name: " + this.state.name);
-    console.log("Product Description: " + this.state.description);
-    console.log("Product Type: " + this.state.type);
-    console.log("Product Price: " + this.state.price + " KD");
-    console.log("Product Tags: " + this.state.tag);
-    console.log("Image URL: " + this.state.pic);
   }
-
   render() {
+    const ds = new ListView.DataSource({
+      rowHasChanged: (r1, r2) => r1 !== r2
+    });
+
     return (
       <View style={{ width: "90%", alignSelf: "center" }}>
         <Text style={{ fontWeight: "bold" }}>{""}</Text>
         <Text style={{ fontWeight: "bold" }}>Product Name:</Text>
         <Item floatingLabel>
           <Input
-            placeholder="Write the product name here..."
-            onChangeText={this.nameChange.bind(this)}
+            placeholder="Write the Product Name here..."
+            onChangeText={inputVal => newProduct.nameChange(inputVal)}
+            value={newProduct.name}
           />
         </Item>
         <Text style={{ fontWeight: "bold" }}>{""}</Text>
@@ -130,8 +92,9 @@ export default class addProduct extends Component {
             style={{ minHeight: 50 }}
             maxLength={250}
             multiline
-            placeholder="Write the product description here..."
-            onChangeText={this.descriptionChange.bind(this)}
+            placeholder="Write your Product Description Here"
+            onChangeText={inputVal => newProduct.descriptionChange(inputVal)}
+            value={newProduct.description}
           />
         </Item>
         <Text style={{ fontWeight: "bold" }}>{""}</Text>
@@ -143,11 +106,11 @@ export default class addProduct extends Component {
             placeholder="Select Status"
             placeholderStyle={{ color: "#bfc6ea" }}
             placeholderIconColor="#007aff"
-            selectedValue={this.state.status}
-            onValueChange={this.statusChange.bind(this)}
+            selectedValue={newProduct.status}
+            onValueChange={inputVal => newProduct.statusChange(inputVal)}
           >
             <Picker.Item label="Available" value="Available" />
-            <Picker.Item label="Not Available" value="Not Available" />
+            <Picker.Item label="Sold" value="Sold" />
           </Picker>
         </Item>
         <Text style={{ fontWeight: "bold" }}>{""}</Text>
@@ -161,8 +124,8 @@ export default class addProduct extends Component {
             placeholder="Select a type"
             placeholderStyle={{ color: "#bfc6ea" }}
             placeholderIconColor="#007aff"
-            selectedValue={this.state.type}
-            onValueChange={this.typeChange.bind(this)}
+            selectedValue={newProduct.type}
+            onValueChange={inputVal => newProduct.typeChange(inputVal)}
           >
             <Picker.Item label="Home" value="Home" />
             <Picker.Item label="Electronics" value="Electronics" />
@@ -172,39 +135,139 @@ export default class addProduct extends Component {
           </Picker>
         </Item>
         <Text style={{ fontWeight: "bold" }}>{""}</Text>
-        <Text style={{ fontWeight: "bold" }}>
-          Add Tags:
-          {this.state.tagCounter < 2 && (
-            <Icon name="plus" type="Entypo" onPress={() => this.tagChange()} />
-          )}
-        </Text>
-        <Item floatingLabel>
-          <Input
-            onChangeText={this.tag1Change.bind(this)}
-            placeholder="Write Tag 1 here..."
+        <Text style={{ fontWeight: "bold" }}>Add Tags:</Text>
+        {newProduct.tagCounter === 0 && (
+          <Item>
+            <Link component={Button} small transparent to={"/addTag/0"}>
+              <Icon small name="plus" type="Entypo" />
+            </Link>
+          </Item>
+        )}
+
+        {newProduct.tagCounter > 0 && (
+          <SwipeRow
+            style={{ justifyContent: "center", height: 50 }}
+            leftOpenValue={0}
+            rightOpenValue={-10}
+            onRowOpen={() =>
+              ActionSheet.show(
+                {
+                  options: BUTTONS,
+                  cancelButtonIndex: CANCEL_INDEX,
+                  destructiveButtonIndex: DESTRUCTIVE_INDEX,
+                  title: "Are you sure you want to Delete " + newProduct.tag[0]
+                },
+                buttonIndex => {
+                  this.setState({
+                    clicked: BUTTONS[buttonIndex],
+                    selectedTag: 0
+                  });
+                }
+              )
+            }
+            left={<Button transparent />}
+            body={
+              <Button full transparent>
+                <Text style={{ alignSelf: "center", color: "black" }}>
+                  {"   "}
+                  {newProduct.tag[0]}
+                </Text>
+              </Button>
+            }
+            right={<Button danger />}
           />
-        </Item>
-        {this.state.tagCounter > 0 && (
-          <Item floatingLabel>
-            <Input
-              onChangeText={this.tag2Change.bind(this)}
-              placeholder="Write Tag 2 here..."
-            />
+        )}
+        {newProduct.tagCounter === 1 && (
+          <Item>
+            <Link component={Button} small transparent to={"/addTag/1"}>
+              <Icon small name="plus" type="Entypo" />
+            </Link>
           </Item>
         )}
-        {this.state.tagCounter > 1 && (
-          <Item floatingLabel>
-            <Input
-              onChangeText={this.tag3Change.bind(this)}
-              placeholder="Write Tag 3 here..."
-            />
+
+        {newProduct.tagCounter > 1 && (
+          <SwipeRow
+            style={{ justifyContent: "center", height: 50 }}
+            leftOpenValue={0}
+            rightOpenValue={-10}
+            onRowOpen={() =>
+              ActionSheet.show(
+                {
+                  options: BUTTONS,
+                  cancelButtonIndex: CANCEL_INDEX,
+                  destructiveButtonIndex: DESTRUCTIVE_INDEX,
+                  title: "Are you sure you want to Delete " + newProduct.tag[1]
+                },
+                buttonIndex => {
+                  this.setState({
+                    clicked: BUTTONS[buttonIndex],
+                    selectedTag: 1
+                  });
+                }
+              )
+            }
+            left={<Button transparent />}
+            body={
+              <Button full transparent>
+                <Text style={{ alignSelf: "center", color: "black" }}>
+                  {"   "}
+                  {newProduct.tag[1]}
+                </Text>
+              </Button>
+            }
+            right={<Button danger />}
+          />
+        )}
+        {newProduct.tagCounter === 2 && (
+          <Item>
+            <Link component={Button} small transparent to={"/addTag/2"}>
+              <Icon small name="plus" type="Entypo" />
+            </Link>
           </Item>
         )}
+        {newProduct.tagCounter > 2 && (
+          <SwipeRow
+            style={{
+              height: 50,
+              justifyContent: "center"
+            }}
+            leftOpenValue={0}
+            rightOpenValue={-10}
+            onRowOpen={() =>
+              ActionSheet.show(
+                {
+                  options: BUTTONS,
+                  cancelButtonIndex: CANCEL_INDEX,
+                  destructiveButtonIndex: DESTRUCTIVE_INDEX,
+                  title: "Are you sure you want to Delete " + newProduct.tag[2]
+                },
+                buttonIndex => {
+                  this.setState({
+                    clicked: BUTTONS[buttonIndex],
+                    selectedTag: 2
+                  });
+                }
+              )
+            }
+            left={<Button transparent />}
+            body={
+              <Button full transparent>
+                <Text style={{ alignSelf: "center", color: "black" }}>
+                  {"   "}
+                  {newProduct.tag[2]}
+                </Text>
+              </Button>
+            }
+            right={<Button danger />}
+          />
+        )}
+
         <Item>
           <Text style={{ fontWeight: "bold" }}>Price:</Text>
           <Input
-            onChangeText={this.priceChange.bind(this)}
-            placeholder="Write Price here..."
+            onChangeText={inputVal => newProduct.priceChange(inputVal)}
+            placeholder="Write in the Price here..."
+            value={"" + newProduct.price}
           />
           <Text>KD</Text>
         </Item>
@@ -213,20 +276,44 @@ export default class addProduct extends Component {
         <Text style={{ fontWeight: "bold" }}>Image URL:</Text>
         <Item>
           <Input
-            onChangeText={this.imageChange.bind(this)}
-            placeholder="Paste URL here"
+            onChangeText={inputVal => newProduct.picChange(inputVal)}
+            placeholder="Paste the image url here..."
+            value={newProduct.pic}
           />
         </Item>
-        {this.state.imageurl && (
+        {newProduct.pic && (
           <Image
-            source={{ uri: this.state.imageurl }}
+            source={{ uri: newProduct.pic }}
             style={{ height: 200, width: null, flex: 1 }}
           />
         )}
-        <Button full success onPress={() => this.submitButton()}>
-          <Text>Success</Text>
+        <Button
+          full
+          success
+          onPress={() => {
+            if (newProduct.name === "") {
+              alert("Product Name cannot be blank");
+            } else if (newProduct.description === "") {
+              alert("Product Description cannot be blank");
+            } else if (newProduct.type === "") {
+              alert("Product Type cannot be blank");
+            } else if (newProduct.status === "") {
+              alert("Product Status cannot be blank");
+            } else if (newProduct.status === "" || newProduct.price === 0) {
+              alert("Product Price cannot be blank or 0");
+            } else {
+              newProduct.postProduct();
+            }
+          }}
+        >
+          <Text>Submit</Text>
+        </Button>
+        <Button full danger onPress={() => newProduct.resetPage()}>
+          <Text>Reset Page</Text>
         </Button>
       </View>
     );
   }
 }
+
+export default observer(addProduct);

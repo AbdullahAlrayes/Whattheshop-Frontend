@@ -11,13 +11,14 @@ import {
   Input,
   Title
 } from "native-base";
+import { withRouter } from "react-router-native";
 
 class MyHeader extends Component {
   render() {
     return (
       <Header>
         <Left>
-          <Button transparent>
+          <Button onPress={() => this.props.history.goBack()} transparent>
             <Icon name="arrow-back" />
           </Button>
         </Left>
@@ -34,4 +35,4 @@ class MyHeader extends Component {
   }
 }
 
-export default MyHeader;
+export default withRouter(MyHeader);
