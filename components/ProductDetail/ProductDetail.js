@@ -45,24 +45,38 @@ class ProductDetail extends Component {
             </Left>
           </CardItem>
           <CardItem cardBody>
-            <Image
-              source={{ uri: product.pic }}
-              style={{ height: 200, width: null, flex: 1 }}
-            />
+            {product.pic && (
+              <Image
+                source={{ uri: product.pic }}
+                style={{ height: 200, width: null, flex: 1 }}
+              />
+            )}
           </CardItem>
-          <Text style={{ fontWeight: "bold" }}>Product Description:</Text>
+          <Text style={{ fontWeight: "bold" }}>
+            {"  "}
+            Product Description:
+          </Text>
           <CardItem>
             <Text>{product.description}</Text>
           </CardItem>
-          <Text style={{ fontWeight: "bold" }}>Product Category:</Text>
+          <Text style={{ fontWeight: "bold" }}>
+            {"  "}
+            Product Category:
+          </Text>
           <CardItem>
             <Text>{product.type.name}</Text>
           </CardItem>
-          <Text style={{ fontWeight: "bold" }}>Product Price:</Text>
+          <Text style={{ fontWeight: "bold" }}>
+            {"  "}
+            Product Price:
+          </Text>
           <CardItem>
             <Text>{product.price} K.D.</Text>
           </CardItem>
-          <Text style={{ fontWeight: "bold" }}>Contact Number:</Text>
+          <Text style={{ fontWeight: "bold" }}>
+            {"  "}
+            Contact Number:
+          </Text>
           <CardItem>
             <Text>{product.created_by.profile.mobile}</Text>
           </CardItem>

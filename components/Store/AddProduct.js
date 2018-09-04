@@ -95,6 +95,12 @@ class newProduct {
         newTagIDs.push(ProductStore.tags[indexVal].id);
       });
     }
+
+    let typeVal;
+    let newType;
+
+    typeVal = ProductStore.types.findIndex(type => type.name === this.type);
+    newType = ProductStore.types[typeVal].id;
     console.log(newTagIDs);
     // let statusVal = ProductStore.products.status.findIndex(
     //   stat => stat.name.toLowerCase() === this.status.toLowerCase()
@@ -106,13 +112,16 @@ class newProduct {
     } else if ((this.status = "Sold")) {
       newStatus = 1;
     }
+    if (this.pic === "") {
+      this.pic = undefined;
+    }
 
     this.sendobject = [
       {
         name: this.name,
         description: this.description,
         pic: this.pic,
-        type: this.type,
+        type: newType,
         status: newStatus,
         tag: newTagIDs,
         price: this.price,
@@ -121,9 +130,18 @@ class newProduct {
     ];
     console.log(this.sendobject);
     return instance
-      .post("api/products/create/", this.sendobject)
+      .post("api/products/create/", {
+        name: this.name,
+        description: this.description,
+        pic: this.pic,
+        type: newType,
+        status: newStatus,
+        tag: newTagIDs,
+        price: this.price,
+        created_by: 1
+      })
       .then(response => console.log("success"))
-      .catch(err => console.log(err));
+      .catch(err => console.log(err.response));
   }
   updateStore(name, description, status, type, price, tags, pic) {
     this.name = name;

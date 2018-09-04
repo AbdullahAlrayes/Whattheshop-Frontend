@@ -51,7 +51,8 @@ class ProductListView extends Component {
           }
           body={
             <Link component={Button} to={"/product/" + index} transparent>
-              <Thumbnail source={{ uri: product.pic }} />
+              {product.pic && <Thumbnail source={{ uri: product.pic }} />}
+
               <Text style={{ alignSelf: "center", color: "black" }}>
                 {product.name}
               </Text>
