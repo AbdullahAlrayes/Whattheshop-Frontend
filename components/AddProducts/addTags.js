@@ -30,22 +30,30 @@ class TagList extends Component {
   }
 
   render() {
-    tagID = this.props.match.params.tagID;
     let existingTags;
+    let indexVal;
     if (ProductStore.tags.length > 0) {
-      existingTags = ProductStore.filteredTags.map((tag, index) => (
-        <ListItem key={index} itemDivider>
-          <Button
-            transparent
-            onPress={() => {
-              newProduct.addTag(tag.name, tagID);
-              this.props.history.goBack();
-            }}
-          >
-            <Text>{tag.name}</Text>
-          </Button>
-        </ListItem>
-      ));
+      existingTags = ProductStore.filteredTags.map((tag, index) => {
+        indexVal = newProduct.tag.findIndex(
+          selectedTag => selectedTag.toLowerCase() === tag.name.toLowerCase()
+        );
+
+        if (indexVal < 0) {
+          return (
+            <ListItem key={index} itemDivider>
+              <Button
+                transparent
+                onPress={() => {
+                  newProduct.addTag(tag.name);
+                  this.props.history.goBack();
+                }}
+              >
+                <Text>{tag.name}</Text>
+              </Button>
+            </ListItem>
+          );
+        }
+      });
     }
 
     return (

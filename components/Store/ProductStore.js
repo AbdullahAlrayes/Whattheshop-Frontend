@@ -16,6 +16,7 @@ class ProductsStore {
     this.tagQuery = "";
     this.status = {};
     this.types = {};
+    this.productQuery = "";
   }
 
   changeCurrentProduct(productID) {
@@ -27,9 +28,21 @@ class ProductsStore {
     this.tagQuery = value;
   }
 
+  productSearch(value) {
+    this.productQuery = value;
+  }
+
   get filteredTags() {
     return this.tags.filter(tag =>
-      `${tag.name}`.toLowerCase().includes(this.tagQuery.toLowerCase())
+      `${tag.name} `.toLowerCase().includes(this.tagQuery.toLowerCase())
+    );
+  }
+
+  get filteredProducts() {
+    return this.products.filter(tag =>
+      `${tag.name} ${tag.type.name} ${tag.description}`
+        .toLowerCase()
+        .includes(this.productQuery.toLowerCase())
     );
   }
 
@@ -83,7 +96,9 @@ decorate(ProductsStore, {
   products: observable,
   tags: observable,
   tagQuery: observable,
-  filteredTags: computed
+  filteredTags: computed,
+  productQuery: observable,
+  filteredProducts: computed
 });
 const ProductStore = new ProductsStore();
 ProductStore.fetchProducts();

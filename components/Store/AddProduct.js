@@ -24,7 +24,7 @@ class newProduct {
     this.pic = "";
     this.sendobject = [];
     this.tagCounter = 0;
-    this.tag = ["", "", ""];
+    this.tag = [];
   }
 
   resetPage() {
@@ -40,7 +40,7 @@ class newProduct {
     this.pic = "";
     this.sendobject = [];
     this.tagCounter = 0;
-    this.tag = ["", "", ""];
+    this.tag = [];
   }
 
   nameChange(value: string) {
@@ -59,8 +59,8 @@ class newProduct {
     this.type = value;
   }
 
-  addTag(value, ID) {
-    this.tag[ID] = value;
+  addTag(value) {
+    this.tag.push(value);
     this.tagCounter += 1;
   }
 
