@@ -14,7 +14,8 @@ class ProductsStore {
     this.productID = {};
     this.tags = [];
     this.tagQuery = "";
-    this.status = "";
+    this.status = {};
+    this.types = {};
   }
 
   changeCurrentProduct(productID) {
@@ -59,9 +60,23 @@ class ProductsStore {
       .get("api/products/list/?format=json")
       .then(res => res.data)
       .then(products => (this.products = products))
-      .then(prod => console.log(prod))
       .catch(err => console.error(err));
   }
+  fetchTypes() {
+    return instance
+      .get("api/products-types/list/?format=json")
+      .then(res => res.data)
+      .then(type => (this.types = type))
+      .catch(err => console.error(err));
+  }
+  fetchStatus() {
+    return instance
+      .get("api/products-status/list/?format=json")
+      .then(res => res.data)
+      .then(stat => (this.status = stat))
+      .catch(err => console.error(err));
+  }
+
   updateCurrentProduct() {}
 }
 decorate(ProductsStore, {
@@ -73,4 +88,6 @@ decorate(ProductsStore, {
 const ProductStore = new ProductsStore();
 ProductStore.fetchProducts();
 ProductStore.fetchTags();
+ProductStore.fetchStatus();
+ProductStore.fetchTypes();
 export default ProductStore;

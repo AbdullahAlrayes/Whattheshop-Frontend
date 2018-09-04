@@ -37,6 +37,8 @@ import newProduct from "../Store/AddProduct";
 import TagList from "./addTags";
 import ProductDetail from "../ProductDetail/ProductDetail";
 import ProductStore from "../Store/ProductStore";
+import TypeList from "./addTypes";
+import StatusList from "./addStatus";
 
 class addProduct extends Component {
   constructor(props) {
@@ -97,43 +99,9 @@ class addProduct extends Component {
             value={newProduct.description}
           />
         </Item>
-        <Text style={{ fontWeight: "bold" }}>{""}</Text>
-        <Item picker>
-          <Text style={{ fontWeight: "bold" }}>Availability:</Text>
-          <Picker
-            mode="dropdown"
-            iosIcon={<Icon name="ios-arrow-down-outline" />}
-            placeholder="Select Status"
-            placeholderStyle={{ color: "#bfc6ea" }}
-            placeholderIconColor="#007aff"
-            selectedValue={newProduct.status}
-            onValueChange={inputVal => newProduct.statusChange(inputVal)}
-          >
-            <Picker.Item label="Available" value="Available" />
-            <Picker.Item label="Sold" value="Sold" />
-          </Picker>
-        </Item>
-        <Text style={{ fontWeight: "bold" }}>{""}</Text>
+        <StatusList />
+        <TypeList />
 
-        <Item picker>
-          <Text style={{ fontWeight: "bold" }}>Type:</Text>
-          <Picker
-            mode="dropdown"
-            iosIcon={<Icon name="ios-arrow-down-outline" />}
-            style={{ width: undefined }}
-            placeholder="Select a type"
-            placeholderStyle={{ color: "#bfc6ea" }}
-            placeholderIconColor="#007aff"
-            selectedValue={newProduct.type}
-            onValueChange={inputVal => newProduct.typeChange(inputVal)}
-          >
-            <Picker.Item label="Home" value="Home" />
-            <Picker.Item label="Electronics" value="Electronics" />
-            <Picker.Item label="Cars" value="Cars" />
-            <Picker.Item label="Garden" value="Garden" />
-            <Picker.Item label="Food" value="Food" />
-          </Picker>
-        </Item>
         <Text style={{ fontWeight: "bold" }}>{""}</Text>
         <Text style={{ fontWeight: "bold" }}>Add Tags:</Text>
         {newProduct.tagCounter === 0 && (
