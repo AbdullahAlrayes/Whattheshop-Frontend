@@ -10,8 +10,10 @@ import Lol from "./Lol";
 import PrivateLul from "./PrivateLul";
 import addProduct from "./AddProducts/addProducts";
 import ProductListView from "./ProductList/ProductListView";
+import FullListView from "./ProductList/FullListView";
 import ProductDetail from "./ProductDetail/ProductDetail";
 import addTags from "./AddProducts/addTags";
+import UserDetail from "./UserDetail/UserDetail";
 
 // Router
 import { Route, Switch, Redirect } from "react-router-native";
@@ -28,8 +30,9 @@ class MainContent extends Component {
       <Content>
         <Switch>
           <Route path="/addProduct" component={addProduct} />
-          <Route path="/productLists" component={ProductListView} />
+          <Route path="/productLists" component={FullListView} />
           <Route path="/product/:productID" component={ProductDetail} />
+          <Route path="/user/:userID" component={UserDetail} />
           <PrivateRoute path="/privateLul" component={PrivateLul} />
           <PrivateRoute path="/profile" component={Profile} />
           <Route path="/addTag/:tagID" component={addTags} />

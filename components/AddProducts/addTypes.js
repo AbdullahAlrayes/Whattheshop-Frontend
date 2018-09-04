@@ -23,7 +23,7 @@ class TypeList extends Component {
     let existingTags;
     if (ProductStore.types.length > 0) {
       existingTags = ProductStore.types.map((type, index) => (
-        <Picker.Item label={type.name} value={type.name} />
+        <Picker.Item key={index} label={type.name} value={type.name} />
       ));
     }
 

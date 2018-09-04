@@ -14,6 +14,7 @@ import {
   Body,
   Right
 } from "native-base";
+import { NativeRouter, Route, Link, Switch } from "react-router-native";
 
 //Store
 import ProductStore from "../Store/ProductStore";
@@ -37,7 +38,9 @@ class ProductDetail extends Component {
         <Card style={{ width: "95%", alignSelf: "center" }}>
           <CardItem>
             <Left>
-              <Thumbnail source={{ uri: product.created_by.profile.pic }} />
+              <Link to={"/user/" + product.created_by}>
+                <Thumbnail source={{ uri: product.created_by.profile.pic }} />
+              </Link>
               <Body>
                 <Text>{product.name}</Text>
                 <Text note>{product.status.name}</Text>
@@ -48,6 +51,15 @@ class ProductDetail extends Component {
             {product.pic && (
               <Image
                 source={{ uri: product.pic }}
+                style={{ height: 200, width: null, flex: 1 }}
+              />
+            )}
+            {!product.pic && (
+              <Image
+                source={{
+                  uri:
+                    "https://www.2checkout.com/upload/images/graphic_product_tangible.png"
+                }}
                 style={{ height: 200, width: null, flex: 1 }}
               />
             )}

@@ -23,7 +23,7 @@ class StatusList extends Component {
     let existingTags;
     if (ProductStore.status.length > 0) {
       existingTags = ProductStore.status.map((status, index) => (
-        <Picker.Item label={status.name} value={status.name} />
+        <Picker.Item key={index} label={status.name} value={status.name} />
       ));
     }
 

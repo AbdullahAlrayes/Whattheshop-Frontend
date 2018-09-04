@@ -39,6 +39,7 @@ import ProductDetail from "../ProductDetail/ProductDetail";
 import ProductStore from "../Store/ProductStore";
 import TypeList from "./addTypes";
 import StatusList from "./addStatus";
+import SelectedTags from "./selectedTagComp";
 
 class addProduct extends Component {
   constructor(props) {
@@ -101,134 +102,10 @@ class addProduct extends Component {
         </Item>
         <StatusList />
         <TypeList />
+        <SelectedTags />
 
         <Text style={{ fontWeight: "bold" }}>{""}</Text>
         <Text style={{ fontWeight: "bold" }}>Add Tags:</Text>
-        {newProduct.tagCounter === 0 && (
-          <Item>
-            <Link component={Button} small transparent to={"/addTag/0"}>
-              <Icon small name="plus" type="Entypo" />
-            </Link>
-          </Item>
-        )}
-
-        {newProduct.tagCounter > 0 && (
-          <SwipeRow
-            style={{ justifyContent: "center", height: 50 }}
-            leftOpenValue={0}
-            rightOpenValue={-10}
-            onRowOpen={() =>
-              ActionSheet.show(
-                {
-                  options: BUTTONS,
-                  cancelButtonIndex: CANCEL_INDEX,
-                  destructiveButtonIndex: DESTRUCTIVE_INDEX,
-                  title: "Are you sure you want to Delete " + newProduct.tag[0]
-                },
-                buttonIndex => {
-                  this.setState({
-                    clicked: BUTTONS[buttonIndex],
-                    selectedTag: 0
-                  });
-                }
-              )
-            }
-            left={<Button transparent />}
-            body={
-              <Button full transparent>
-                <Text style={{ alignSelf: "center", color: "black" }}>
-                  {"   "}
-                  {newProduct.tag[0]}
-                </Text>
-              </Button>
-            }
-            right={<Button danger />}
-          />
-        )}
-        {newProduct.tagCounter === 1 && (
-          <Item>
-            <Link component={Button} small transparent to={"/addTag/1"}>
-              <Icon small name="plus" type="Entypo" />
-            </Link>
-          </Item>
-        )}
-
-        {newProduct.tagCounter > 1 && (
-          <SwipeRow
-            style={{ justifyContent: "center", height: 50 }}
-            leftOpenValue={0}
-            rightOpenValue={-10}
-            onRowOpen={() =>
-              ActionSheet.show(
-                {
-                  options: BUTTONS,
-                  cancelButtonIndex: CANCEL_INDEX,
-                  destructiveButtonIndex: DESTRUCTIVE_INDEX,
-                  title: "Are you sure you want to Delete " + newProduct.tag[1]
-                },
-                buttonIndex => {
-                  this.setState({
-                    clicked: BUTTONS[buttonIndex],
-                    selectedTag: 1
-                  });
-                }
-              )
-            }
-            left={<Button transparent />}
-            body={
-              <Button full transparent>
-                <Text style={{ alignSelf: "center", color: "black" }}>
-                  {"   "}
-                  {newProduct.tag[1]}
-                </Text>
-              </Button>
-            }
-            right={<Button danger />}
-          />
-        )}
-        {newProduct.tagCounter === 2 && (
-          <Item>
-            <Link component={Button} small transparent to={"/addTag/2"}>
-              <Icon small name="plus" type="Entypo" />
-            </Link>
-          </Item>
-        )}
-        {newProduct.tagCounter > 2 && (
-          <SwipeRow
-            style={{
-              height: 50,
-              justifyContent: "center"
-            }}
-            leftOpenValue={0}
-            rightOpenValue={-10}
-            onRowOpen={() =>
-              ActionSheet.show(
-                {
-                  options: BUTTONS,
-                  cancelButtonIndex: CANCEL_INDEX,
-                  destructiveButtonIndex: DESTRUCTIVE_INDEX,
-                  title: "Are you sure you want to Delete " + newProduct.tag[2]
-                },
-                buttonIndex => {
-                  this.setState({
-                    clicked: BUTTONS[buttonIndex],
-                    selectedTag: 2
-                  });
-                }
-              )
-            }
-            left={<Button transparent />}
-            body={
-              <Button full transparent>
-                <Text style={{ alignSelf: "center", color: "black" }}>
-                  {"   "}
-                  {newProduct.tag[2]}
-                </Text>
-              </Button>
-            }
-            right={<Button danger />}
-          />
-        )}
 
         <Item>
           <Text style={{ fontWeight: "bold" }}>Price:</Text>

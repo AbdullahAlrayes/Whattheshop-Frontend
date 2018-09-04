@@ -1,51 +1,49 @@
 import React, { Component } from "react";
-import { observer } from "mobx-react";
+import { Image } from "react-native";
 import { NativeRouter, Route, Link, Switch } from "react-router-native";
 
-import { ListView } from "react-native";
 import {
   Container,
   Header,
   Content,
-  Button,
-  Input,
-  Grid,
-  Col,
-  Thumbnail,
-  Icon,
-  SwipeRow,
-  Segment,
+  Card,
   View,
+  CardItem,
+  Thumbnail,
+  Text,
+  Button,
+  Icon,
   Left,
-  Right,
+  SwipeRow,
   Body,
-  List,
-  ListItem,
-  Text
+  Right
 } from "native-base";
+import { ListView } from "react-native";
 
-//Import Product Store
+//Store
 import ProductStore from "../Store/ProductStore";
+import { observer } from "mobx-react";
 import UserStore from "../Store/UserStore";
-import UsersList from "./UsersList";
 
-class ProductListView extends Component {
+class UserDetail extends Component {
   constructor(props) {
     super(props);
     this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     this.state = {
+      user: {},
       basic: true,
       listViewData: ProductStore.filteredProducts
     };
   }
-  render() {
-    const ds = new ListView.DataSource({
-      rowHasChanged: (r1, r2) => r1 !== r2
-    });
+  componentDidMount() {
+    console.log(this.props.match.params.productID);
+  }
 
-    let productList;
-    if (ProductStore.filteredProducts.length > 0) {
-      productList = ProductStore.filteredProducts.map((product, index) => (
+  render() {
+    const user = UserStore.users[this.props.match.params.userID];
+    let userProds;
+    if (user.products.length > 0) {
+      userProds = user.products.map((product, index) => {
         <SwipeRow
           key={index}
           leftOpenValue={75}
@@ -90,14 +88,30 @@ class ProductListView extends Component {
               <Icon active name="list" />
             </Link>
           }
-        />
-      ));
-    } else {
-      productList = <Text>Loading Products...</Text>;
+        />;
+      });
     }
 
-    return <View>{productList}</View>;
+    return (
+      <Content>
+        <Card style={{ width: "95%", alignSelf: "center" }}>
+          <CardItem>
+            <Left>
+              <Body>
+                <Text>{user.username}</Text>
+                <Text note>
+                  {user.first_name}
+                  {user.last_name}
+                </Text>
+              </Body>
+            </Left>
+          </CardItem>
+          <CardItem cardBody />
+        </Card>
+        {userProds}
+      </Content>
+    );
   }
 }
 
-export default observer(ProductListView);
+export default observer(UserDetail);
