@@ -11,7 +11,7 @@ import {
   Input,
   Title
 } from "native-base";
-import { withRouter } from "react-router-native";
+import { withRouter, Link } from "react-router-native";
 
 class MyHeader extends Component {
   render() {
@@ -26,9 +26,9 @@ class MyHeader extends Component {
           <Title>Every Shop</Title>
         </Body>
         <Right>
-          <Button transparent>
+          <Link component={Button} transparent to="/cart">
             <Icon name="cart" />
-          </Button>
+          </Link>
         </Right>
       </Header>
     );

@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { observer } from "mobx-react";
 import { NativeRouter, Route, Link, Switch } from "react-router-native";
-import { SearchBar } from "react-native-elements";
 
 import { ListView, ScrollView } from "react-native";
 import {
@@ -11,6 +10,7 @@ import {
   Button,
   Input,
   Grid,
+  Item,
   Col,
   Thumbnail,
   Icon,
@@ -42,36 +42,40 @@ class FullListView extends Component {
   render() {
     return (
       <View>
-        <SearchBar
-          round
-          lightTheme
-          placeholder="Search"
-          onChangeText={inputVal => {
-            ProductStore.productSearch(inputVal);
-            UserStore.userSearch(inputVal);
-            console.log(UserStore.userQuery);
-          }}
-        />
-        <Segment>
-          <Button
-            first
-            active={this.state.sortList === "product"}
-            onPress={() => this.setState({ sortList: "product" })}
-          >
-            <Text>By Product</Text>
-          </Button>
-          <Button
-            active={this.state.sortList === "user"}
-            onPress={() => this.setState({ sortList: "user" })}
-            last
-          >
-            <Text>By User</Text>
-          </Button>
-        </Segment>
         <View>
+          <Item rounded>
+            <Icon name="ios-search" />
+            <Input
+              placeholder="Search"
+              onChangeText={inputVal => {
+                ProductStore.productSearch(inputVal);
+                UserStore.userSearch(inputVal);
+              }}
+            />
+          </Item>
+
+          <Segment style={{ backgroundColor: "white" }}>
+            <Button
+              first
+              active={this.state.sortList === "product"}
+              onPress={() => this.setState({ sortList: "product" })}
+            >
+              <Text>By Product</Text>
+            </Button>
+            <Button
+              active={this.state.sortList === "user"}
+              onPress={() => this.setState({ sortList: "user" })}
+              last
+            >
+              <Text>By User</Text>
+            </Button>
+          </Segment>
+        </View>
+        <ScrollView style={{ minHeight: 90 }}>
+          <Text> </Text>
           {this.state.sortList === "product" && <ProductListView />}
           {this.state.sortList === "user" && <UsersList />}
-        </View>
+        </ScrollView>
       </View>
     );
   }

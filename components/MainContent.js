@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 
 // NativeBase
-import { Content } from "native-base";
+import { Content, View, Container } from "native-base";
 
 // Component
 import Login from "./Login";
@@ -14,6 +14,7 @@ import FullListView from "./ProductList/FullListView";
 import ProductDetail from "./ProductDetail/ProductDetail";
 import addTags from "./AddProducts/addTags";
 import UserDetail from "./UserDetail/UserDetail";
+import Cart from "./CartPage/Cart";
 
 // Router
 import { Route, Switch, Redirect } from "react-router-native";
@@ -27,7 +28,7 @@ import ProductStore from "./Store/ProductStore";
 class MainContent extends Component {
   render() {
     return (
-      <Content>
+      <Container>
         <Switch>
           <Route path="/addProduct" component={addProduct} />
           <Route path="/productLists" component={FullListView} />
@@ -37,9 +38,10 @@ class MainContent extends Component {
           <PrivateRoute path="/profile" component={Profile} />
           <Route path="/addTag/:tagID" component={addTags} />
           <Route path="/login" component={Login} />
+          <Route path="/cart" component={Cart} />
           <Redirect to="/productLists" />
         </Switch>
-      </Content>
+      </Container>
     );
   }
 }

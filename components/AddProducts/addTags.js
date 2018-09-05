@@ -73,8 +73,8 @@ class TagList extends Component {
             full
             success
             onPress={() => {
-              ProductStore.addTag(ProductStore.tagQuery, tagID);
-              newProduct.addTag(ProductStore.tagQuery, tagID);
+              ProductStore.addTag(ProductStore.tagQuery);
+              newProduct.addTag(ProductStore.tagQuery);
               this.props.history.goBack();
             }}
           >
