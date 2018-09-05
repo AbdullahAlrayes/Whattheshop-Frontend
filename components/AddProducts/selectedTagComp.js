@@ -39,7 +39,7 @@ class SelectedTags extends Component {
     }
 
     return (
-      <Content>
+      <View>
         <Item>
           <Text style={{ fontWeight: "bold" }}>Add Tags:</Text>
           <Link
@@ -54,7 +54,7 @@ class SelectedTags extends Component {
         <Item style={{ flexWrap: "wrap", justifyContent: "flex-start" }}>
           {existingTags}
         </Item>
-      </Content>
+      </View>
     );
   }
 }

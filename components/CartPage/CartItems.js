@@ -27,15 +27,13 @@ import {
 //Import Product Store
 import ProductStore from "../Store/ProductStore";
 import CartStore from "../Store/CartStore";
-import UsersList from "./UsersList";
 
-class ProductListView extends Component {
+class CartItems extends Component {
   constructor(props) {
     super(props);
     this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     this.state = {
-      basic: true,
-      listViewData: ProductStore.filteredProducts
+      basic: true
     };
   }
   render() {
@@ -43,23 +41,23 @@ class ProductListView extends Component {
       rowHasChanged: (r1, r2) => r1 !== r2
     });
 
-    let productList;
-    if (ProductStore.filteredProducts.length > 0) {
-      productList = ProductStore.filteredProducts.map((product, index) => (
+    let cartList;
+    if (CartStore.items.length > 0) {
+      cartList = CartStore.items.map((product, index) => (
         <SwipeRow
           key={index}
           leftOpenValue={75}
           rightOpenValue={-75}
           left={
             <Button
-              success
+              danger
               onPress={() => {
-                CartStore.updateCart(product);
-                console.log(CartStore.items);
-                alert(`Added ${product.name} to Cart`);
+                let name = product.name;
+                CartStore.removeItem(index);
+                alert(`Removed ${name} to Cart`);
               }}
             >
-              <Icon active name="add" />
+              <Icon active name="trash" />
             </Button>
           }
           body={
@@ -106,11 +104,11 @@ class ProductListView extends Component {
         />
       ));
     } else {
-      productList = <Text>Loading Products...</Text>;
+      cartList = <Text>No Items in Cart</Text>;
     }
 
-    return <View>{productList}</View>;
+    return <View>{cartList}</View>;
   }
 }
 
-export default observer(ProductListView);
+export default observer(CartItems);

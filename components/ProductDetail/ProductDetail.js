@@ -18,6 +18,8 @@ import { NativeRouter, Route, Link, Switch } from "react-router-native";
 
 //Store
 import ProductStore from "../Store/ProductStore";
+import CartStore from "../Store/CartStore";
+import UserStore from "../Store/UserStore";
 import { observer } from "mobx-react";
 
 class ProductDetail extends Component {
@@ -33,17 +35,35 @@ class ProductDetail extends Component {
 
   render() {
     const product = ProductStore.products[this.props.match.params.productID];
+    const userIndex = UserStore.users.findIndex(
+      user => user.id === product.created_by.id
+    );
     return (
       <Content>
         <Card style={{ width: "95%", alignSelf: "center" }}>
           <CardItem>
             <Left>
-              <Link to={"/user/" + product.created_by}>
+              <Link to={"/user/" + userIndex}>
                 <Thumbnail source={{ uri: product.created_by.profile.pic }} />
               </Link>
               <Body>
-                <Text>{product.name}</Text>
-                <Text note>{product.status.name}</Text>
+                <Text
+                  style={{
+                    color:
+                      product.status.name === "Cancelled" ? "maroon" : "black"
+                  }}
+                >
+                  {product.name}
+                </Text>
+                <Text
+                  note
+                  style={{
+                    color:
+                      product.status.name === "Cancelled" ? "maroon" : "black"
+                  }}
+                >
+                  {product.status.name}
+                </Text>
               </Body>
             </Left>
           </CardItem>
@@ -93,6 +113,17 @@ class ProductDetail extends Component {
             <Text>{product.created_by.profile.mobile}</Text>
           </CardItem>
         </Card>
+        <Button
+          success
+          full
+          onPress={() => {
+            CartStore.updateCart(product);
+            console.log(CartStore.items);
+            alert(`Added ${product.name} to Cart`);
+          }}
+        >
+          <Text>Add to Cart</Text>
+        </Button>
       </Content>
     );
   }

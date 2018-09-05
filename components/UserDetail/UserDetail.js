@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Image } from "react-native";
+import { Image, ScrollView } from "react-native";
 import { NativeRouter, Route, Link, Switch } from "react-router-native";
 
 import {
@@ -35,81 +35,117 @@ class UserDetail extends Component {
       listViewData: ProductStore.filteredProducts
     };
   }
-  componentDidMount() {
-    console.log(this.props.match.params.productID);
-  }
 
   render() {
-    const user = UserStore.users[this.props.match.params.userID];
-    let userProds;
-    if (user.products.length > 0) {
-      userProds = user.products.map((product, index) => {
-        <SwipeRow
-          key={index}
-          leftOpenValue={75}
-          rightOpenValue={-75}
-          left={
-            <Button
-              success
-              onPress={() => alert(`Added ${product.name} to Cart`)}
-            >
-              <Icon active name="add" />
-            </Button>
-          }
-          body={
-            <Link component={Button} to={"/product/" + index} transparent>
-              {product.pic && <Thumbnail source={{ uri: product.pic }} />}
-              {!product.pic && (
-                <Thumbnail
-                  source={{
-                    uri:
-                      "https://www.2checkout.com/upload/images/graphic_product_tangible.png"
-                  }}
-                />
-              )}
-              <View style={{ flexDirection: "column" }}>
-                <Text> {product.name}</Text>
-                <Text
-                  note
-                  style={{
-                    color: product.status.name === "Cancelled" && "grey"
-                  }}
-                >
-                  {" "}
-                  {product.status.name}
-                </Text>
-              </View>
-
-              <Text style={{ color: "black" }}>{product.price} K.D.</Text>
-            </Link>
-          }
-          right={
-            <Link component={Button} to={"/product/" + index} warning>
-              <Icon active name="list" />
-            </Link>
-          }
-        />;
-      });
+    const userIDparam = this.props.match.params.userID;
+    const user = UserStore.users[userIDparam];
+    let outputProductView;
+    ProductStore.selectedUser = user.id;
+    if (ProductStore.filteredProductsByUser.length > 0) {
+      outputProductView = ProductStore.filteredProductsByUser.map(
+        (product, index) => {
+          return (
+            <Card key={index} style={{ width: "95%", alignSelf: "center" }}>
+              <CardItem>
+                <Left>
+                  <Body>
+                    <Text>{product.name}</Text>
+                    <Text note>{product.status.name}</Text>
+                  </Body>
+                </Left>
+              </CardItem>
+              <CardItem cardBody>
+                {product.pic && (
+                  <Image
+                    source={{ uri: product.pic }}
+                    style={{ height: 200, width: null, flex: 1 }}
+                  />
+                )}
+                {!product.pic && (
+                  <Image
+                    source={{
+                      uri:
+                        "https://www.2checkout.com/upload/images/graphic_product_tangible.png"
+                    }}
+                    style={{ height: 200, width: null, flex: 1 }}
+                  />
+                )}
+              </CardItem>
+              <Text style={{ fontWeight: "bold" }}>
+                {"  "}
+                Product Description:
+              </Text>
+              <CardItem>
+                <Text>{product.description}</Text>
+              </CardItem>
+              <Text style={{ fontWeight: "bold" }}>
+                {"  "}
+                Product Category:
+              </Text>
+              <CardItem>
+                <Text>{product.type.name}</Text>
+              </CardItem>
+              <Text style={{ fontWeight: "bold" }}>
+                {"  "}
+                Product Price:
+              </Text>
+              <CardItem>
+                <Text>{product.price} K.D.</Text>
+              </CardItem>
+              <Text style={{ fontWeight: "bold" }}>
+                {"  "}
+                Contact Number:
+              </Text>
+              <CardItem>
+                <Text>{product.created_by.profile.mobile}</Text>
+              </CardItem>
+            </Card>
+          );
+        }
+      );
+    } else {
+      outputProductView = <Text> No Products Available</Text>;
     }
-
     return (
-      <Content>
-        <Card style={{ width: "95%", alignSelf: "center" }}>
-          <CardItem>
-            <Left>
-              <Body>
-                <Text>{user.username}</Text>
-                <Text note>
-                  {user.first_name}
-                  {user.last_name}
-                </Text>
-              </Body>
-            </Left>
-          </CardItem>
-          <CardItem cardBody />
-        </Card>
-        {userProds}
-      </Content>
+      <View>
+        <View>
+          <Card style={{ width: "95%", alignSelf: "center" }}>
+            <CardItem>
+              <Left>
+                {!user.profile && (
+                  <Thumbnail
+                    source={{
+                      uri:
+                        "http://profilepicturesdp.com/wp-content/uploads/2018/07/empty-user-profile-picture-3-200x200.jpg"
+                    }}
+                  />
+                )}
+                {user.profile &&
+                  !user.profile.pic && (
+                    <Thumbnail
+                      source={{
+                        uri:
+                          "http://profilepicturesdp.com/wp-content/uploads/2018/07/empty-user-profile-picture-3-200x200.jpg"
+                      }}
+                    />
+                  )}
+                {user.profile &&
+                  user.profile.pic && (
+                    <Thumbnail source={{ uri: user.profile.pic }} />
+                  )}
+                <Body>
+                  <Text>{user.username}</Text>
+                  <Text note>
+                    {user.first_name}
+                    {user.last_name}
+                  </Text>
+                </Body>
+              </Left>
+            </CardItem>
+          </Card>
+        </View>
+        <ScrollView>{outputProductView}</ScrollView>
+      </View>
     );
   }
 }

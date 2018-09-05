@@ -1,6 +1,6 @@
 import { decorate, observable, computed, action } from "mobx";
 import axios from "axios";
-
+import { StyleSheet, Text, View } from "react-native";
 //Import Stores
 import newProduct from "./AddProduct";
 
@@ -17,6 +17,7 @@ class ProductsStore {
     this.status = {};
     this.types = {};
     this.productQuery = "";
+    this.selectedUser = 1;
   }
 
   changeCurrentProduct(productID) {
@@ -38,6 +39,11 @@ class ProductsStore {
     );
   }
 
+  get filteredProductsByUser() {
+    return this.products.filter(
+      product => +product.created_by.id === +this.selectedUser
+    );
+  }
   get filteredProducts() {
     return this.products.filter(tag =>
       `${tag.name} ${tag.type.name} ${tag.description}`
@@ -65,7 +71,13 @@ class ProductsStore {
     return instance
       .get("api/tags/list/?format=json")
       .then(res => res.data)
-      .then(tag => (this.tags = tag))
+      .then(
+        tag =>
+          (this.tags = tag.sort((a, b) => {
+            if (a.name < b.name) return -1;
+            else return 0;
+          }))
+      )
       .catch(err => console.error(err));
   }
   fetchProducts() {
@@ -98,7 +110,8 @@ decorate(ProductsStore, {
   tagQuery: observable,
   filteredTags: computed,
   productQuery: observable,
-  filteredProducts: computed
+  filteredProducts: computed,
+  filteredProductsByUser: computed
 });
 const ProductStore = new ProductsStore();
 ProductStore.fetchProducts();
