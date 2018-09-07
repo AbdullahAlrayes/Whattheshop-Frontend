@@ -20,9 +20,18 @@ class ProductsStore {
     this.selectedUser = 1;
   }
 
-  changeCurrentProduct(productID) {
-    let indexVal = this.products.findIndex(product => product.id === productID);
-    this.productID = productID;
+  removeQuantityFromProduct(prodID) {
+    let indexVal = this.products.findIndex(product => product.id === prodID);
+    this.products[indexVal].quantity -= 1;
+  }
+  addQuantityFromProduct(prodID) {
+    let indexVal = this.products.findIndex(product => product.id === prodID);
+    this.products[indexVal].quantity += 1;
+  }
+
+  changeCurrentProduct(prodID) {
+    let indexVal = this.products.findIndex(product => product.id === prodID);
+    this.productID = prodID;
   }
 
   tagSearch(value) {

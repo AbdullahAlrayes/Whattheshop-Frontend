@@ -12,7 +12,8 @@ import {
   Icon,
   Left,
   Body,
-  Right
+  Right,
+  Badge
 } from "native-base";
 import { NativeRouter, Route, Link, Switch } from "react-router-native";
 
@@ -38,6 +39,17 @@ class ProductDetail extends Component {
     const userIndex = UserStore.users.findIndex(
       user => user.id === product.created_by.id
     );
+    let existingTags;
+    if (product.tag.length > 0) {
+      existingTags = product.tag.map((tag, index) => (
+        <Button key={index} transparent>
+          <Badge style={{ backgroundColor: "grey", flexDirection: "row" }}>
+            <Text>{tag.name}</Text>
+          </Badge>
+        </Button>
+      ));
+    }
+
     return (
       <Content>
         <Card style={{ width: "95%", alignSelf: "center" }}>
@@ -112,18 +124,32 @@ class ProductDetail extends Component {
           <CardItem>
             <Text>{product.created_by.profile.mobile}</Text>
           </CardItem>
+          <Text style={{ fontWeight: "bold" }}>
+            {"  "}
+            Product Tags:
+          </Text>
+          <CardItem>
+            <Text>{existingTags}</Text>
+          </CardItem>
         </Card>
-        <Button
-          success
-          full
-          onPress={() => {
-            CartStore.updateCart(product);
-            console.log(CartStore.items);
-            alert(`Added ${product.name} to Cart`);
-          }}
-        >
-          <Text>Add to Cart</Text>
-        </Button>
+        {(product.quantity > 0) & (product.status.name !== "Cancelled") ? (
+          <Button
+            success
+            full
+            onPress={() => {
+              ProductStore.removeQuantityFromProduct(product.id);
+              CartStore.addCart(product, 1);
+              console.log(CartStore.items);
+              alert(`Added ${product.name} to Cart`);
+            }}
+          >
+            <Text>Add to Cart</Text>
+          </Button>
+        ) : (
+          <Button light full>
+            <Text>No more stock available</Text>
+          </Button>
+        )}
       </Content>
     );
   }

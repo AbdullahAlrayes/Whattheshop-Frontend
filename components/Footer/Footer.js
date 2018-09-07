@@ -23,9 +23,9 @@ class MyFooter extends Component {
             <Icon name="list" type="Feather" />
             <Text>Orders</Text>
           </Link>
-          <Link component={Button} verticle to="/profile">
+          <Link component={Button} verticle to="/testpage">
             <Icon name="person" />
-            <Text>Profile</Text>
+            <Text>Test</Text>
           </Link>
         </FooterTab>
       </Footer>

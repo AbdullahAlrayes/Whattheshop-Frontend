@@ -17,7 +17,7 @@ class MainFooter extends Component {
           <Link component={Button} to="/privateLul">
             <Icon name="lock" />
           </Link>
-          <Link component={Button} to="/profile">
+          <Link component={Button} to="/testpage">
             <Icon name="person" />
           </Link>
         </FooterTab>

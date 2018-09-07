@@ -32,16 +32,15 @@ var DESTRUCTIVE_INDEX = 0;
 var CANCEL_INDEX = 1;
 
 //Import Add Product Store
-import newProduct from "../Store/AddProduct";
+import newProduct from "./Store/AddProduct";
 
 //Import Components
-import TagList from "./addTags";
-import ProductDetail from "../ProductDetail/ProductDetail";
-import ProductStore from "../Store/ProductStore";
-import TypeList from "./addTypes";
-import StatusList from "./addStatus";
-import SelectedTags from "./selectedTagComp";
-import { ScrollView } from "react-native-gesture-handler";
+import TagList from "./AddProducts/addTags";
+import ProductDetail from "./ProductDetail/ProductDetail";
+import ProductStore from "./Store/ProductStore";
+import TypeList from "./AddProducts/addTypes";
+import StatusList from "./AddProducts/addStatus";
+import SelectedTags from "./AddProducts/selectedTagComp";
 
 class addProduct extends Component {
   constructor(props) {
@@ -100,7 +99,7 @@ class addProduct extends Component {
     });
 
     return (
-      <ScrollView style={{ width: "90%", alignSelf: "center" }}>
+      <View style={{ width: "90%", alignSelf: "center" }}>
         <Text style={{ fontWeight: "bold" }}>{""}</Text>
         <Text style={{ fontWeight: "bold" }}>Product Name:</Text>
         <Item floatingLabel>
@@ -140,31 +139,27 @@ class addProduct extends Component {
         </Item>
         <Item>
           <Text style={{ fontWeight: "bold" }}>Quantity Available:</Text>
-          <Text> {newProduct.quantity} </Text>
+          <Text> {newProduct.quantity}</Text>
           <Button
             small
             rounded
-            success
+            primary
             onPress={() => newProduct.quantityChange(1)}
           >
-            <Text style={{ fontWeight: "bold" }}>+</Text>
+            <Text>+</Text>
           </Button>
         </Item>
         <Text style={{ fontWeight: "bold" }}> </Text>
 
         <Text style={{ fontWeight: "bold" }}>Image URL:</Text>
-        <Button full primary onPress={this._pickImage}>
-          {this.state.image ? (
-            <Text>Change Image</Text>
-          ) : (
+        <Item>
+          <Button full warning onPress={this._pickImage}>
             <Text>Upload Image</Text>
-          )}
-        </Button>
+          </Button>
+        </Item>
         {this.state.image && (
           <Image source={{ uri: this.state.image }} style={{ height: 200 }} />
         )}
-        <Text> </Text>
-
         <Button
           full
           success
@@ -189,10 +184,7 @@ class addProduct extends Component {
         <Button full danger onPress={() => newProduct.resetPage()}>
           <Text>Reset Page</Text>
         </Button>
-        <Button full danger onPress={() => alert(this.state.image)}>
-          <Text>Send Image</Text>
-        </Button>
-      </ScrollView>
+      </View>
     );
   }
 

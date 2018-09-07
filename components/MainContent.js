@@ -15,6 +15,7 @@ import ProductDetail from "./ProductDetail/ProductDetail";
 import addTags from "./AddProducts/addTags";
 import UserDetail from "./UserDetail/UserDetail";
 import Cart from "./CartPage/Cart";
+import TestPage from "./TestPage";
 
 // Router
 import { Route, Switch, Redirect } from "react-router-native";
@@ -36,8 +37,8 @@ class MainContent extends Component {
           <Route path="/user/:userID" component={UserDetail} />
           <PrivateRoute path="/privateLul" component={PrivateLul} />
           <PrivateRoute path="/profile" component={Profile} />
+          <Route path="/testpage" component={TestPage} />
           <Route path="/addTag/:tagID" component={addTags} />
-          <Route path="/login" component={Login} />
           <Route path="/cart" component={Cart} />
           <Redirect to="/productLists" />
         </Switch>

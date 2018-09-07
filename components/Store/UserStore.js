@@ -23,7 +23,6 @@ class UsersStore {
       .get("api/users/list/?format=json")
       .then(res => res.data)
       .then(user => (this.users = user))
-      .then(user => console.log(user))
       .catch(err => console.error(err));
   }
 
