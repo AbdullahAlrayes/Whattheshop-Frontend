@@ -25,6 +25,7 @@ class newProduct {
     this.sendobject = [];
     this.tagCounter = 0;
     this.tag = [];
+    this.quantity = 1;
   }
 
   resetPage() {
@@ -41,6 +42,7 @@ class newProduct {
     this.sendobject = [];
     this.tagCounter = 0;
     this.tag = [];
+    this.quantity = 1;
   }
 
   nameChange(value: string) {
@@ -57,6 +59,13 @@ class newProduct {
   }
   typeChange(value: string) {
     this.type = value;
+  }
+  quantityChange(value) {
+    this.quantity += value;
+  }
+
+  updateQuantity(value) {
+    this.quantity += value;
   }
 
   addTag(value) {
@@ -128,7 +137,7 @@ class newProduct {
         created_by: 1
       }
     ];
-    console.log(this.sendobject);
+
     return instance
       .post("api/products/create/", {
         name: this.name,
@@ -166,11 +175,9 @@ decorate(newProduct, {
   created_on: observable,
   updated_on: observable,
   pic: observable,
-  tag1: observable,
-  tag2: observable,
-  tag3: observable,
   tagCounter: observable,
-  tag: observable
+  tag: observable,
+  quantity: observable
 });
 
 export default new newProduct();

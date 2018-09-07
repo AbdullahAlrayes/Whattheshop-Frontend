@@ -10,6 +10,7 @@ import {
   Button,
   Input,
   Grid,
+  Badge,
   Col,
   Thumbnail,
   Icon,
@@ -42,26 +43,36 @@ class CartItems extends Component {
     });
 
     let cartList;
-    if (CartStore.items.length > 0) {
-      cartList = CartStore.items.map((product, index) => (
+    let indexVal = ProductStore.products.findIndex(
+      product => product.id === this.props.itemID
+    );
+    let itemIndex = CartStore.items.findIndex(
+      item => item.id === this.props.itemID
+    );
+
+    if (indexVal > -0.5) {
+      let product = ProductStore.products[indexVal];
+
+      cartList = (
         <SwipeRow
-          key={index}
           leftOpenValue={75}
           rightOpenValue={-75}
           left={
             <Button
               danger
               onPress={() => {
-                let name = product.name;
-                CartStore.removeItem(index);
-                alert(`Removed ${name} to Cart`);
+                CartStore.removeItem(
+                  itemIndex,
+                  CartStore.items[itemIndex].newPrice
+                );
+                alert(`Removed ${product.name} to Cart`);
               }}
             >
               <Icon active name="trash" />
             </Button>
           }
           body={
-            <Link component={Button} to={"/product/" + index} transparent>
+            <Button transparent>
               {product.pic && <Thumbnail source={{ uri: product.pic }} />}
               {!product.pic && (
                 <Thumbnail
@@ -89,22 +100,52 @@ class CartItems extends Component {
                   }}
                 >
                   {" "}
-                  {product.status.name}
+                  {product.status.name} @{" "}
+                  <Text style={{ color: "black" }}>
+                    {CartStore.items[itemIndex].newPrice} K.D.
+                  </Text>
                 </Text>
               </View>
-
-              <Text style={{ color: "black" }}>{product.price} K.D.</Text>
-            </Link>
+              <Button
+                small
+                rounded
+                disabled={CartStore.items[itemIndex].quantity === 1}
+                danger
+                light={CartStore.items[itemIndex].quantity === 1}
+                onPress={() => {
+                  ProductStore.addQuantityFromProduct(product.id);
+                  CartStore.removeCart(product, 1);
+                }}
+              >
+                <Text>-</Text>
+              </Button>
+              <Badge success>
+                <Text style={{ fontWeight: "bold" }}>
+                  {CartStore.items[itemIndex].quantity}
+                </Text>
+              </Badge>
+              <Button
+                small
+                rounded
+                success
+                disabled={product.quantity === 0}
+                light={product.quantity === 0}
+                onPress={() => {
+                  ProductStore.removeQuantityFromProduct(product.id);
+                  CartStore.addCart(product, 1);
+                }}
+              >
+                <Text>+</Text>
+              </Button>
+            </Button>
           }
           right={
-            <Link component={Button} to={"/product/" + index} warning>
+            <Link component={Button} to={"/product/" + indexVal} warning>
               <Icon active name="list" />
             </Link>
           }
         />
-      ));
-    } else {
-      cartList = <Text>No Items in Cart</Text>;
+      );
     }
 
     return <View>{cartList}</View>;

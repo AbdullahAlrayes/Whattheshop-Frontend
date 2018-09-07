@@ -47,20 +47,27 @@ class ProductListView extends Component {
     if (ProductStore.filteredProducts.length > 0) {
       productList = ProductStore.filteredProducts.map((product, index) => (
         <SwipeRow
+          disableRightSwipe={
+            (product.quantity > 0) & (product.status.name !== "Cancelled")
+              ? false
+              : true
+          }
           key={index}
           leftOpenValue={75}
           rightOpenValue={-75}
           left={
-            <Button
-              success
-              onPress={() => {
-                CartStore.updateCart(product);
-                console.log(CartStore.items);
-                alert(`Added ${product.name} to Cart`);
-              }}
-            >
-              <Icon active name="add" />
-            </Button>
+            (product.quantity > 0) & (product.status.name !== "Cancelled") && (
+              <Button
+                success
+                onPress={() => {
+                  CartStore.addCart(product, 1);
+                  ProductStore.removeQuantityFromProduct(product.id);
+                  alert(`Added ${product.name} to Cart`);
+                }}
+              >
+                <Icon active name="add" />
+              </Button>
+            )
           }
           body={
             <Link component={Button} to={"/product/" + index} transparent>
@@ -87,15 +94,25 @@ class ProductListView extends Component {
                   note
                   style={{
                     color:
-                      product.status.name === "Cancelled" ? "maroon" : "black"
+                      product.status.name === "Cancelled" ||
+                      product.quantity === 0
+                        ? "maroon"
+                        : "black"
                   }}
                 >
                   {" "}
-                  {product.status.name}
+                  {product.status.name === "Cancelled"
+                    ? "Cancelled"
+                    : product.quantity > 0
+                      ? "Available"
+                      : "Sold Out"}{" "}
+                  @ {product.price} K.D.
                 </Text>
               </View>
-
-              <Text style={{ color: "black" }}>{product.price} K.D.</Text>
+              {product.quantity === 0 ||
+              product.status.name === "Cancelled" ? null : (
+                <Text>{product.quantity} remaining</Text>
+              )}
             </Link>
           }
           right={

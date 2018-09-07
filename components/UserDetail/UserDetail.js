@@ -24,6 +24,7 @@ import { ListView } from "react-native";
 import ProductStore from "../Store/ProductStore";
 import { observer } from "mobx-react";
 import UserStore from "../Store/UserStore";
+import CartStore from "../Store/CartStore";
 
 class UserDetail extends Component {
   constructor(props) {
@@ -99,12 +100,42 @@ class UserDetail extends Component {
               <CardItem>
                 <Text>{product.created_by.profile.mobile}</Text>
               </CardItem>
+              <Text style={{ fontWeight: "bold" }}>
+                {"  "}
+                Quantity Remaining in Stock:
+              </Text>
+              <CardItem>
+                <Text>{product.quantity}</Text>
+              </CardItem>
+              {(product.quantity > 0) &
+              (product.status.name !== "Cancelled") ? (
+                <Button
+                  success
+                  full
+                  onPress={() => {
+                    ProductStore.removeQuantityFromProduct(product.id);
+                    CartStore.addCart(product, 1);
+                    console.log(CartStore.items);
+                    alert(`Added ${product.name} to Cart`);
+                  }}
+                >
+                  <Text>Add to Cart</Text>
+                </Button>
+              ) : (
+                <Button light full>
+                  <Text>No more stock available</Text>
+                </Button>
+              )}
             </Card>
           );
         }
       );
     } else {
-      outputProductView = <Text> No Products Available</Text>;
+      outputProductView = (
+        <Button style={{ backgroundColor: "#7575a3" }} full>
+          <Text> No Products Available</Text>
+        </Button>
+      );
     }
     return (
       <View>
@@ -144,7 +175,15 @@ class UserDetail extends Component {
             </CardItem>
           </Card>
         </View>
-        <ScrollView>{outputProductView}</ScrollView>
+        <ScrollView>
+          {outputProductView}
+          <Text> </Text>
+          <Text> </Text>
+          <Text> </Text>
+          <Text> </Text>
+          <Text> </Text>
+          <Text> </Text>
+        </ScrollView>
       </View>
     );
   }

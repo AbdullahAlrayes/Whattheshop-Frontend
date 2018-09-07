@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { observer } from "mobx-react";
 import { NativeRouter, Route, Link, Switch } from "react-router-native";
 
-import { ListView } from "react-native";
+import { ListView, FlatList } from "react-native";
 import {
   Container,
   Header,
@@ -43,11 +43,12 @@ class UsersList extends Component {
     });
 
     let userList;
+    let userFlat;
     if (UserStore.users.length > 0 && UserStore.filteredUsers.length === 0) {
       userList = <Text>No Search Results...</Text>;
     } else if (UserStore.filteredUsers.length > 0) {
       userList = UserStore.filteredUsers.map((user, index) => (
-        <Row key={index} style={{ minHeight: 60 }}>
+        <Row key={index} style={{ minHeight: 70 }}>
           <Link component={Button} to={"/user/" + index} transparent>
             {!user.profile && (
               <Thumbnail
