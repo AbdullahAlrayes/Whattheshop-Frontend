@@ -18,6 +18,8 @@ class ProductsStore {
     this.types = {};
     this.productQuery = "";
     this.selectedUser = 1;
+    this.loading = false;
+    this.typeFilter = null;
   }
 
   removeQuantityFromProduct(prodID) {
@@ -58,11 +60,21 @@ class ProductsStore {
     );
   }
   get filteredProducts() {
-    return this.products.filter(tag =>
-      `${tag.name} ${tag.type.name} ${tag.description}`
-        .toLowerCase()
-        .includes(this.productQuery.toLowerCase())
-    );
+    if (this.typeFilter === null) {
+      return this.products.filter(tag =>
+        `${tag.name} ${tag.type.name} ${tag.description}`
+          .toLowerCase()
+          .includes(this.productQuery.toLowerCase())
+      );
+    } else {
+      return this.products.filter(
+        tag =>
+          `${tag.name} ${tag.type.name} ${tag.description}`
+            .toLowerCase()
+            .includes(this.productQuery.toLowerCase()) &&
+          tag.type.name.includes(this.typeFilter)
+      );
+    }
   }
 
   addTag(value) {
@@ -105,6 +117,7 @@ class ProductsStore {
       .get("api/products-types/list/?format=json")
       .then(res => res.data)
       .then(type => (this.types = type))
+      .then(type => (this.loading = true))
       .catch(err => console.error(err));
   }
   fetchStatus() {
@@ -123,8 +136,11 @@ decorate(ProductsStore, {
   tagQuery: observable,
   filteredTags: computed,
   productQuery: observable,
+  types: observable,
+  loading: observable,
   filteredProducts: computed,
-  filteredProductsByUser: computed
+  filteredProductsByUser: computed,
+  typeFilter: observable
 });
 const ProductStore = new ProductsStore();
 ProductStore.fetchProducts();

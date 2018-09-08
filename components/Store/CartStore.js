@@ -3,7 +3,7 @@ import axios from "axios";
 
 //Import Stores
 import ProductStore from "./ProductStore";
-import OrderSNStore from "./OrderSNStore";
+import OrderStore from "./OrderSNStore";
 const instance = axios.create({
   baseURL: "http://178.128.202.231"
 });
@@ -50,17 +50,20 @@ class CartsStore {
   }
 
   uploadOrder(userID, orderSNList) {
-    console.log(this.totalPrice);
-    console.log(userID);
-    console.log(orderSNList);
     return instance
-      .post("api/order-serial-no/create/", {
-        price: this.totalPrice,
+      .post("api/orders/create/", {
+        price: +this.totalPrice,
         status: 1,
-        created_by: userID,
+        created_by: +userID,
+        updated_by: +userID,
         orderSerialNo: orderSNList
       })
       .then(response => console.log("success"))
+      .then(() => {
+        this.resetCart();
+        OrderStore.fetchOrderSNs();
+        OrderStore.fetchOrderHistory();
+      })
       .catch(err => console.log(err.response));
   }
 
@@ -85,10 +88,6 @@ class CartsStore {
 
   removeItem(index, price) {
     this.items.splice(index, 1);
-  }
-
-  resetCart() {
-    this.items = [];
   }
 }
 

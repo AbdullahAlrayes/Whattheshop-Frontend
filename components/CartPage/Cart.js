@@ -1,5 +1,11 @@
 import React, { Component } from "react";
-import { Image, ScrollView, Keyboard, DeviceEventEmitter } from "react-native";
+import {
+  Image,
+  ScrollView,
+  Alert,
+  Keyboard,
+  DeviceEventEmitter
+} from "react-native";
 import {
   Container,
   Header,
@@ -31,12 +37,33 @@ class MyCart extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      basic: true,
       discountClicked: false,
-      maxOrderID: OrderStore.orederSN[0].id
+      maxOrderID: OrderStore.orderSN[0].id + 1,
+      finalOrderSNCombined: null
     };
   }
-
-  UploadCart(promise) {
+  _showAlert = () => {
+    Alert.alert(
+      "Checkout Confirmation",
+      "Are you sure you want to Checkout?",
+      [
+        {
+          text: "Yes",
+          onPress: () => {
+            console.log(this.state.finalOrderSNCombined);
+            CartStore.uploadOrder(2, this.state.finalOrderSNCombined);
+          }
+        },
+        {
+          text: "No, Take Me Back!",
+          onPress: () => console.log("Ask me later pressed")
+        }
+      ],
+      { cancelable: false }
+    );
+  };
+  UploadCart() {
     let j;
     let i;
     let finalOrderList = [];
@@ -57,9 +84,9 @@ class MyCart extends Component {
       let orderSN;
       orderSN = "" + prodID + quantID + priceID;
       CartStore.uploadFinalOrder(orderSN);
-      finalOrderList.push(+this.state.maxOrderID + i);
+      finalOrderList.push(+this.state.maxOrderID + j);
     }
-    console.log(finalOrderList);
+    this.setState({ finalOrderSNCombined: finalOrderList });
   }
 
   render() {
@@ -67,6 +94,7 @@ class MyCart extends Component {
     cartItemsListed = CartStore.items.map((item, index) => (
       <CartItems itemID={item.id} key={index} />
     ));
+    console.log(this.state.maxOrderID);
     return (
       <View>
         {CartStore.discountConfirmation > 0 && (
@@ -86,30 +114,24 @@ class MyCart extends Component {
               Total Price = {CartStore.totalPrice} K.D.
             </Text>
           </Button>
-          <Button
-            full
-            success
-            onPress={() => {
-              let testPromise = console.log("start");
-              testPromise
-                .then(promise => this.UploadCart(promise))
-                .then(res => CartStore.uploadOrder(3, finalOrderList))
-                .then(res => console.log("done"));
-            }}
-          >
-            <Text>CheckOut</Text>
-          </Button>
+          {CartStore.items.length > 0 ? (
+            <Button
+              full
+              success
+              onPress={() => {
+                this.UploadCart();
+                this._showAlert();
+              }}
+            >
+              <Text>CheckOut</Text>
+            </Button>
+          ) : (
+            <Button full light disabled>
+              <Text>No Items in Cart</Text>
+            </Button>
+          )}
           <Text> </Text>
-          <Button
-            full
-            danger
-            onPress={() => {
-              CartStore.resetCart();
-              alert("All items in cart have been Dropped");
-            }}
-          >
-            <Text>Drop All Cart Items</Text>
-          </Button>
+
           <Text> </Text>
           <Button
             full
