@@ -1,74 +1,143 @@
 import React, { Component } from "react";
-import { ListView } from "react-native";
+import { Image, ScrollView, Keyboard, DeviceEventEmitter } from "react-native";
 import {
   Container,
   Header,
   Content,
+  Card,
+  View,
+  CardItem,
+  Item,
+  Thumbnail,
+  Text,
+  Input,
   Button,
   Icon,
-  List,
-  ListItem,
-  Text
+  Left,
+  Body,
+  Right
 } from "native-base";
-const datas = [
-  "Simon Mignolet",
-  "Nathaniel Clyne",
-  "Dejan Lovren",
-  "Mama Sakho",
-  "Alberto Moreno",
-  "Emre Can",
-  "Joe Allen",
-  "Phil Coutinho"
-];
-export default class SwipeableListExample extends Component {
+import { NativeRouter, Route, Link, Switch } from "react-router-native";
+
+//Store
+import ProductStore from "./Store/ProductStore";
+import CartStore from "./Store/CartStore";
+import UserStore from "./Store/UserStore";
+import { observer } from "mobx-react";
+import CartItems from "./CartPage/CartItems";
+import OrderStore from "./Store/OrderSNStore";
+
+class MyCart extends Component {
   constructor(props) {
     super(props);
-    this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     this.state = {
-      basic: true,
-      listViewData: datas
+      discountClicked: false,
+      maxOrderID: OrderStore.orederSN[0].id
     };
   }
-  deleteRow(secId, rowId, rowMap) {
-    rowMap[`${secId}${rowId}`].props.closeRow();
-    const newData = [...this.state.listViewData];
-    newData.splice(rowId, 1);
-    this.setState({ listViewData: newData });
+
+  UploadCart(promise) {
+    let j;
+    let i;
+    let finalOrderList = [];
+    for (j = 0; j < CartStore.items.length; j++) {
+      let prodID = "0" + CartStore.items[j].id;
+      for (i = 0; prodID.length < 6; i++) {
+        prodID = 0 + prodID;
+      }
+      let quantID = "0" + CartStore.items[j].quantity;
+      for (i = 0; quantID.length < 6; i++) {
+        quantID = 0 + quantID;
+      }
+      let priceID =
+        "0" + CartStore.items[j].price * (1 - CartStore.discountConfirmation);
+      for (i = 0; priceID.length < 6; i++) {
+        priceID = 0 + priceID;
+      }
+      let orderSN;
+      orderSN = "" + prodID + quantID + priceID;
+      CartStore.uploadFinalOrder(orderSN);
+      finalOrderList.push(+this.state.maxOrderID + i);
+    }
+    return finalOrderList;
   }
+
   render() {
-    const ds = new ListView.DataSource({
-      rowHasChanged: (r1, r2) => r1 !== r2
-    });
+    let cartItemsListed;
+    cartItemsListed = CartStore.items.map((item, index) => (
+      <CartItems itemID={item.id} key={index} />
+    ));
+    testPromise = console.log("hello");
     return (
-      <Container>
-        <Header />
-        <Content>
-          <List
-            leftOpenValue={75}
-            rightOpenValue={-75}
-            dataSource={this.ds.cloneWithRows(this.state.listViewData)}
-            renderRow={data => (
-              <ListItem>
-                <Text> {data} </Text>
-              </ListItem>
-            )}
-            renderLeftHiddenRow={data => (
-              <Button full onPress={() => alert(data)}>
-                <Icon active name="information-circle" />
+      <View>
+        {CartStore.discountConfirmation > 0 && (
+          <Button success full>
+            <Text style={{ fontWeight: "bold" }}>
+              Successful Code = {CartStore.discountConfirmation * 100}% off
+            </Text>
+          </Button>
+        )}
+        <ScrollView style={{ minHeight: 90 }}>
+          <Text> </Text>
+          <Text> </Text>
+          {cartItemsListed}
+
+          <Button full info>
+            <Text style={{ fontWeight: "bold", fontSize: 20 }}>
+              Total Price = {CartStore.totalPrice} K.D.
+            </Text>
+          </Button>
+          <Button
+            full
+            success
+            onPress={() => {
+              testPromise()
+                .then(promise => this.UploadCart(promise))
+                .then(res => CartStore.uploadOrder(3, finalOrderList))
+                .then(res => console.log("done"));
+            }}
+          >
+            <Text>CheckOut</Text>
+          </Button>
+          <Text> </Text>
+          <Button
+            full
+            danger
+            onPress={() => {
+              CartStore.resetCart();
+              alert("All items in cart have been Dropped");
+            }}
+          >
+            <Text>Drop All Cart Items</Text>
+          </Button>
+          <Text> </Text>
+          <Button
+            full
+            warning
+            onPress={() =>
+              this.setState({ discountClicked: !this.state.discountClicked })
+            }
+          >
+            <Text>Add a Discount Code</Text>
+          </Button>
+          {this.state.discountClicked && (
+            <View>
+              <Item rounded>
+                <Input
+                  placeholder="Write the Discount Code Here..."
+                  onChangeText={inputVal => CartStore.updateDiscount(inputVal)}
+                />
+              </Item>
+
+              <Button full transparent style={{ height: 600 }}>
+                <Text> </Text>
               </Button>
-            )}
-            renderRightHiddenRow={(data, secId, rowId, rowMap) => (
-              <Button
-                full
-                danger
-                onPress={_ => this.deleteRow(secId, rowId, rowMap)}
-              >
-                <Icon active name="trash" />
-              </Button>
-            )}
-          />
-        </Content>
-      </Container>
+            </View>
+          )}
+        </ScrollView>
+      </View>
     );
   }
 }
+
+export default observer(MyCart);

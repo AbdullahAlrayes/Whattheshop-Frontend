@@ -13,6 +13,8 @@ import {
   Item,
   Col,
   Thumbnail,
+  Picker,
+  Form,
   Icon,
   SwipeRow,
   Segment,
@@ -22,7 +24,8 @@ import {
   Body,
   List,
   ListItem,
-  Text
+  Text,
+  Badge
 } from "native-base";
 
 //Import Product Store
@@ -36,10 +39,26 @@ class FullListView extends Component {
     super(props);
     this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     this.state = {
-      sortList: "product"
+      sortList: "product",
+      selected2: undefined
     };
   }
+  onValueChange2(value: string) {
+    ProductStore.typeFilter = value;
+    this.setState({
+      selected2: value
+    });
+  }
   render() {
+    let picker;
+
+    {
+      ProductStore.loading &&
+        (picker = ProductStore.types.map((type, index) => (
+          <Picker.Item key={index} label={type.name} value={type.name} />
+        )));
+    }
+
     return (
       <View>
         <View>
@@ -54,7 +73,7 @@ class FullListView extends Component {
             />
           </Item>
 
-          <Segment style={{ backgroundColor: "white" }}>
+          <Segment style={{ backgroundColor: "#2c3e50" }}>
             <Button
               first
               active={this.state.sortList === "product"}
@@ -70,6 +89,32 @@ class FullListView extends Component {
               <Text>By User</Text>
             </Button>
           </Segment>
+          {this.state.sortList === "product" && (
+            <Form>
+              <Item picker>
+                <Text style={{ fontWeight: "bold" }}>Filter by Category: </Text>
+                {this.state.selected2 && (
+                  <Button transparent onPress={() => this.onValueChange2(null)}>
+                    <Badge small>
+                      <Text>-</Text>
+                    </Badge>
+                  </Button>
+                )}
+                <Picker
+                  mode="dropdown"
+                  iosIcon={<Icon name="ios-arrow-down-outline" />}
+                  style={{ width: undefined }}
+                  placeholder="Select a Category"
+                  placeholderStyle={{ color: "#bfc6ea" }}
+                  placeholderIconColor="#007aff"
+                  selectedValue={this.state.selected2}
+                  onValueChange={this.onValueChange2.bind(this)}
+                >
+                  {picker}
+                </Picker>
+              </Item>
+            </Form>
+          )}
         </View>
         <ScrollView style={{ minHeight: 90 }}>
           <Text> </Text>

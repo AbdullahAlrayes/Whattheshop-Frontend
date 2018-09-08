@@ -128,6 +128,8 @@ class ProductListView extends Component {
           }
         />
       ));
+    } else if (ProductStore.products.length > 0) {
+      productList = <Text>No Products Show Up In Filter...</Text>;
     } else {
       productList = <Text>Loading Products...</Text>;
     }

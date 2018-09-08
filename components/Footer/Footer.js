@@ -30,7 +30,7 @@ class MyFooter extends Component {
             <Icon name="home" type="Entypo" style={{ color: "white" }} />
             <Text style={{ color: "white" }}>My Items</Text>
           </Link>
-          <Link component={Button} verticle to="/profile">
+          <Link component={Button} verticle to="/orders">
             <Icon name="list" type="Feather" style={{ color: "white" }} />
             <Text style={{ color: "white" }}>Orders</Text>
           </Link>

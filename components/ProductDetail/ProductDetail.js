@@ -94,7 +94,7 @@ class ProductDetail extends Component {
             {product.pic ? (
               <Image
                 source={{ uri: product.pic }}
-                style={{ height: 200, width: null, flex: 1 }}
+                style={{ height: 200, flex: 1 }}
               />
             ) : (
               <Image
@@ -102,7 +102,7 @@ class ProductDetail extends Component {
                   uri:
                     "https://www.2checkout.com/upload/images/graphic_product_tangible.png"
                 }}
-                style={{ height: 200, width: null, flex: 1 }}
+                style={{ height: 200, flex: 1 }}
               />
             )}
           </CardItem>
@@ -140,9 +140,7 @@ class ProductDetail extends Component {
             {"  "}
             Product Tags:
           </Text>
-          <CardItem>
-            <Text>{existingTags}</Text>
-          </CardItem>
+          <CardItem>{existingTags}</CardItem>
           <Text style={{ fontWeight: "bold" }}>
             {"  "}
             Quantity Remaining in Stock:
