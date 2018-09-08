@@ -28,6 +28,10 @@ class ProductsStore {
     let indexVal = this.products.findIndex(product => product.id === prodID);
     this.products[indexVal].quantity += 1;
   }
+  removeFromCart(prodID, quant) {
+    let indexVal = this.products.findIndex(product => product.id === prodID);
+    this.products[indexVal].quantity += quant;
+  }
 
   changeCurrentProduct(prodID) {
     let indexVal = this.products.findIndex(product => product.id === prodID);

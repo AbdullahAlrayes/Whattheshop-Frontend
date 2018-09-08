@@ -1,5 +1,14 @@
 import React, { Component } from "react";
-import { Image, ScrollView } from "react-native";
+import {
+  Dimensions,
+  AsyncStorage,
+  Image,
+  TextInput,
+  ScrollView,
+  FlatList,
+  Platform
+} from "react-native";
+
 import { NativeRouter, Route, Link, Switch } from "react-router-native";
 
 import {
@@ -15,6 +24,7 @@ import {
   Icon,
   Left,
   SwipeRow,
+  Toast,
   Body,
   Right
 } from "native-base";
@@ -59,7 +69,7 @@ class UserDetail extends Component {
                 {product.pic && (
                   <Image
                     source={{ uri: product.pic }}
-                    style={{ height: 200, width: null, flex: 1 }}
+                    style={{ height: 200, width: 100, flex: 1 }}
                   />
                 )}
                 {!product.pic && (
@@ -98,7 +108,10 @@ class UserDetail extends Component {
                 Contact Number:
               </Text>
               <CardItem>
-                <Text>{product.created_by.profile.mobile}</Text>
+                {product.created_by.profile &&
+                product.created_by.profile.mobile ? (
+                  <Text>{product.created_by.profile.mobile}</Text>
+                ) : null}
               </CardItem>
               <Text style={{ fontWeight: "bold" }}>
                 {"  "}
@@ -116,7 +129,13 @@ class UserDetail extends Component {
                     ProductStore.removeQuantityFromProduct(product.id);
                     CartStore.addCart(product, 1);
                     console.log(CartStore.items);
-                    alert(`Added ${product.name} to Cart`);
+
+                    Toast.show({
+                      text: `Added ${product.name} to Cart`,
+                      type: "success",
+                      duration: 500,
+                      position: "top"
+                    });
                   }}
                 >
                   <Text>Add to Cart</Text>
@@ -143,27 +162,16 @@ class UserDetail extends Component {
           <Card style={{ width: "95%", alignSelf: "center" }}>
             <CardItem>
               <Left>
-                {!user.profile && (
+                {!user.profile || !user.profile.pic ? (
                   <Thumbnail
                     source={{
                       uri:
                         "http://profilepicturesdp.com/wp-content/uploads/2018/07/empty-user-profile-picture-3-200x200.jpg"
                     }}
                   />
+                ) : (
+                  <Thumbnail source={{ uri: user.profile.pic }} />
                 )}
-                {user.profile &&
-                  !user.profile.pic && (
-                    <Thumbnail
-                      source={{
-                        uri:
-                          "http://profilepicturesdp.com/wp-content/uploads/2018/07/empty-user-profile-picture-3-200x200.jpg"
-                      }}
-                    />
-                  )}
-                {user.profile &&
-                  user.profile.pic && (
-                    <Thumbnail source={{ uri: user.profile.pic }} />
-                  )}
                 <Body>
                   <Text>{user.username}</Text>
                   <Text note>
