@@ -13,6 +13,7 @@ import {
   Left,
   Body,
   Right,
+  Toast,
   Badge
 } from "native-base";
 import { NativeRouter, Route, Link, Switch } from "react-router-native";
@@ -56,7 +57,17 @@ class ProductDetail extends Component {
           <CardItem>
             <Left>
               <Link to={"/user/" + userIndex}>
-                <Thumbnail source={{ uri: product.created_by.profile.pic }} />
+                {!product.created_by.profile ||
+                !product.created_by.profile.pic ? (
+                  <Thumbnail
+                    source={{
+                      uri:
+                        "http://profilepicturesdp.com/wp-content/uploads/2018/07/empty-user-profile-picture-3-200x200.jpg"
+                    }}
+                  />
+                ) : (
+                  <Thumbnail source={{ uri: product.created_by.profile.pic }} />
+                )}
               </Link>
               <Body>
                 <Text
@@ -80,13 +91,12 @@ class ProductDetail extends Component {
             </Left>
           </CardItem>
           <CardItem cardBody>
-            {product.pic && (
+            {product.pic ? (
               <Image
                 source={{ uri: product.pic }}
                 style={{ height: 200, width: null, flex: 1 }}
               />
-            )}
-            {!product.pic && (
+            ) : (
               <Image
                 source={{
                   uri:
@@ -122,7 +132,9 @@ class ProductDetail extends Component {
             Contact Number:
           </Text>
           <CardItem>
-            <Text>{product.created_by.profile.mobile}</Text>
+            {product.created_by.profile && product.created_by.profile.mobile ? (
+              <Text>{product.created_by.profile.mobile}</Text>
+            ) : null}
           </CardItem>
           <Text style={{ fontWeight: "bold" }}>
             {"  "}
@@ -130,6 +142,13 @@ class ProductDetail extends Component {
           </Text>
           <CardItem>
             <Text>{existingTags}</Text>
+          </CardItem>
+          <Text style={{ fontWeight: "bold" }}>
+            {"  "}
+            Quantity Remaining in Stock:
+          </Text>
+          <CardItem>
+            <Text>{product.quantity}</Text>
           </CardItem>
         </Card>
         {(product.quantity > 0) & (product.status.name !== "Cancelled") ? (
@@ -140,7 +159,12 @@ class ProductDetail extends Component {
               ProductStore.removeQuantityFromProduct(product.id);
               CartStore.addCart(product, 1);
               console.log(CartStore.items);
-              alert(`Added ${product.name} to Cart`);
+              Toast.show({
+                text: `Added ${product.name} to Cart`,
+                type: "success",
+                duration: 500,
+                position: "top"
+              });
             }}
           >
             <Text>Add to Cart</Text>

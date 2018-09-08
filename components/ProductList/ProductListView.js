@@ -17,6 +17,7 @@ import {
   Segment,
   View,
   Left,
+  Toast,
   Right,
   Body,
   List,
@@ -62,7 +63,12 @@ class ProductListView extends Component {
                 onPress={() => {
                   CartStore.addCart(product, 1);
                   ProductStore.removeQuantityFromProduct(product.id);
-                  alert(`Added ${product.name} to Cart`);
+                  Toast.show({
+                    text: `Added ${product.name} to Cart`,
+                    type: "success",
+                    duration: 500,
+                    position: "bottom"
+                  });
                 }}
               >
                 <Icon active name="add" />

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { observer } from "mobx-react";
 import { NativeRouter, Route, Link, Switch } from "react-router-native";
 
-import { ListView } from "react-native";
+import { ListView, Alert } from "react-native";
 import {
   Container,
   Header,
@@ -22,6 +22,7 @@ import {
   Body,
   List,
   ListItem,
+  Toast,
   Text
 } from "native-base";
 
@@ -34,9 +35,44 @@ class CartItems extends Component {
     super(props);
     this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     this.state = {
-      basic: true
+      basic: true,
+      showToast: false,
+      itemIndexVal: null,
+      productID: null,
+      cartQuant: null
     };
   }
+
+  _showAlert = () => {
+    Alert.alert(
+      "Delete Confirmation",
+      "Are you sure you want to delete?",
+      [
+        {
+          text: "Yes Delete",
+          onPress: () => {
+            this.setState({
+              cartQuant: CartStore.items[this.state.itemIndexVal].quantity
+            });
+            CartStore.removeItem(
+              this.state.itemIndexVal,
+              CartStore.items[this.state.itemIndexVal].newPrice
+            );
+            ProductStore.removeFromCart(
+              this.state.productID,
+              this.state.cartQuant
+            );
+          }
+        },
+        {
+          text: "No Do Not Delete!",
+          onPress: () => console.log("Ask me later pressed")
+        }
+      ],
+      { cancelable: false }
+    );
+  };
+
   render() {
     const ds = new ListView.DataSource({
       rowHasChanged: (r1, r2) => r1 !== r2
@@ -61,11 +97,11 @@ class CartItems extends Component {
             <Button
               danger
               onPress={() => {
-                CartStore.removeItem(
-                  itemIndex,
-                  CartStore.items[itemIndex].newPrice
-                );
-                alert(`Removed ${product.name} to Cart`);
+                this.setState({
+                  itemIndexVal: itemIndex,
+                  productID: product.id
+                });
+                this._showAlert();
               }}
             >
               <Icon active name="trash" />
@@ -115,6 +151,11 @@ class CartItems extends Component {
                 onPress={() => {
                   ProductStore.addQuantityFromProduct(product.id);
                   CartStore.removeCart(product, 1);
+                  Toast.show({
+                    text: `1 ${product.name} removed from Cart`,
+                    type: "danger",
+                    duration: 500
+                  });
                 }}
               >
                 <Text>-</Text>
@@ -133,6 +174,11 @@ class CartItems extends Component {
                 onPress={() => {
                   ProductStore.removeQuantityFromProduct(product.id);
                   CartStore.addCart(product, 1);
+                  Toast.show({
+                    text: `1 ${product.name} added to Cart`,
+                    type: "success",
+                    duration: 500
+                  });
                 }}
               >
                 <Text>+</Text>

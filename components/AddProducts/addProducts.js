@@ -15,6 +15,7 @@ import {
   ActionSheet,
   Icon,
   Right,
+  Card,
   Picker,
   Input,
   Textarea,
@@ -100,98 +101,100 @@ class addProduct extends Component {
     });
 
     return (
-      <ScrollView style={{ width: "90%", alignSelf: "center" }}>
-        <Text style={{ fontWeight: "bold" }}>{""}</Text>
-        <Text style={{ fontWeight: "bold" }}>Product Name:</Text>
-        <Item floatingLabel>
-          <Input
-            placeholder="Write the Product Name here..."
-            onChangeText={inputVal => newProduct.nameChange(inputVal)}
-            value={newProduct.name}
-          />
-        </Item>
-        <Text style={{ fontWeight: "bold" }}>{""}</Text>
-        <Text style={{ fontWeight: "bold" }}>Product Description:</Text>
-        <Item floatingLabel>
-          <Input
-            style={{ minHeight: 50 }}
-            maxLength={250}
-            multiline
-            placeholder="Write your Product Description Here"
-            onChangeText={inputVal => newProduct.descriptionChange(inputVal)}
-            value={newProduct.description}
-          />
-        </Item>
-        <StatusList />
-        <TypeList />
-        <SelectedTags />
+      <ScrollView>
+        <Card style={{ width: "95%", alignSelf: "center" }}>
+          <Text style={{ fontWeight: "bold" }}>{""}</Text>
+          <Text style={{ fontWeight: "bold" }}>Product Name:</Text>
+          <Item floatingLabel>
+            <Input
+              placeholder="Write the Product Name here..."
+              onChangeText={inputVal => newProduct.nameChange(inputVal)}
+              value={newProduct.name}
+            />
+          </Item>
+          <Text style={{ fontWeight: "bold" }}>{""}</Text>
+          <Text style={{ fontWeight: "bold" }}>Product Description:</Text>
+          <Item floatingLabel>
+            <Input
+              style={{ minHeight: 50 }}
+              maxLength={250}
+              multiline
+              placeholder="Write your Product Description Here"
+              onChangeText={inputVal => newProduct.descriptionChange(inputVal)}
+              value={newProduct.description}
+            />
+          </Item>
+          <StatusList />
+          <TypeList />
+          <SelectedTags />
 
-        <Text style={{ fontWeight: "bold" }}>{""}</Text>
-        <Text style={{ fontWeight: "bold" }}>Add Tags:</Text>
+          <Text style={{ fontWeight: "bold" }}>{""}</Text>
+          <Text style={{ fontWeight: "bold" }}>Add Tags:</Text>
 
-        <Item>
-          <Text style={{ fontWeight: "bold" }}>Price:</Text>
-          <Input
-            onChangeText={inputVal => newProduct.priceChange(inputVal)}
-            placeholder="Write in the Price here..."
-            value={"" + newProduct.price}
-          />
-          <Text>KD</Text>
-        </Item>
-        <Item>
-          <Text style={{ fontWeight: "bold" }}>Quantity Available:</Text>
-          <Text> {newProduct.quantity} </Text>
-          <Button
-            small
-            rounded
-            success
-            onPress={() => newProduct.quantityChange(1)}
-          >
-            <Text style={{ fontWeight: "bold" }}>+</Text>
+          <Item>
+            <Text style={{ fontWeight: "bold" }}>Price:</Text>
+            <Input
+              onChangeText={inputVal => newProduct.priceChange(inputVal)}
+              placeholder="Write in the Price here..."
+              value={"" + newProduct.price}
+            />
+            <Text>KD</Text>
+          </Item>
+          <Item>
+            <Text style={{ fontWeight: "bold" }}>Quantity Available:</Text>
+            <Text> {newProduct.quantity} </Text>
+            <Button
+              small
+              rounded
+              success
+              onPress={() => newProduct.quantityChange(1)}
+            >
+              <Text style={{ fontWeight: "bold" }}>+</Text>
+            </Button>
+          </Item>
+          <Text style={{ fontWeight: "bold" }}> </Text>
+
+          <Text style={{ fontWeight: "bold" }}>Image URL:</Text>
+          <Button full primary onPress={this._pickImage}>
+            {this.state.image ? (
+              <Text>Change Image</Text>
+            ) : (
+              <Text>Upload Image</Text>
+            )}
           </Button>
-        </Item>
-        <Text style={{ fontWeight: "bold" }}> </Text>
-
-        <Text style={{ fontWeight: "bold" }}>Image URL:</Text>
-        <Button full primary onPress={this._pickImage}>
-          {this.state.image ? (
-            <Text>Change Image</Text>
-          ) : (
-            <Text>Upload Image</Text>
+          {this.state.image && (
+            <Image source={{ uri: this.state.image }} style={{ height: 200 }} />
           )}
-        </Button>
-        {this.state.image && (
-          <Image source={{ uri: this.state.image }} style={{ height: 200 }} />
-        )}
-        <Text> </Text>
+          <Text> </Text>
 
-        <Button
-          full
-          success
-          onPress={() => {
-            if (newProduct.name === "") {
-              alert("Product Name cannot be blank");
-            } else if (newProduct.description === "") {
-              alert("Product Description cannot be blank");
-            } else if (newProduct.type === "") {
-              alert("Product Type cannot be blank");
-            } else if (newProduct.status === "") {
-              alert("Product Status cannot be blank");
-            } else if (newProduct.status === "" || newProduct.price === 0) {
-              alert("Product Price cannot be blank or 0");
-            } else {
-              newProduct.postProduct();
-            }
-          }}
-        >
-          <Text>Submit</Text>
-        </Button>
-        <Button full danger onPress={() => newProduct.resetPage()}>
-          <Text>Reset Page</Text>
-        </Button>
-        <Button full danger onPress={() => alert(this.state.image)}>
-          <Text>Send Image</Text>
-        </Button>
+          <Button
+            full
+            success
+            onPress={() => {
+              if (newProduct.name === "") {
+                alert("Product Name cannot be blank");
+              } else if (newProduct.description === "") {
+                alert("Product Description cannot be blank");
+              } else if (newProduct.type === "") {
+                alert("Product Type cannot be blank");
+              } else if (newProduct.status === "") {
+                alert("Product Status cannot be blank");
+              } else if (newProduct.status === "" || newProduct.price === 0) {
+                alert("Product Price cannot be blank or 0");
+              } else {
+                newProduct.postProduct();
+              }
+            }}
+          >
+            <Text>Submit</Text>
+          </Button>
+          <Button full danger onPress={() => newProduct.resetPage()}>
+            <Text>Reset Page</Text>
+          </Button>
+          <Button full danger onPress={() => alert(this.state.image)}>
+            <Text>Send Image</Text>
+          </Button>
+        </Card>
       </ScrollView>
     );
   }

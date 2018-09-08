@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 
 // NativeBase
-import { Content, View, Container } from "native-base";
+import { Content, View, Container, Root } from "native-base";
+import { LinearGradient } from "expo";
 
 // Component
 import Login from "./Login";
@@ -30,18 +31,20 @@ class MainContent extends Component {
   render() {
     return (
       <Container>
-        <Switch>
-          <Route path="/addProduct" component={addProduct} />
-          <Route path="/productLists" component={FullListView} />
-          <Route path="/product/:productID" component={ProductDetail} />
-          <Route path="/user/:userID" component={UserDetail} />
-          <PrivateRoute path="/privateLul" component={PrivateLul} />
-          <PrivateRoute path="/profile" component={Profile} />
-          <Route path="/testpage" component={TestPage} />
-          <Route path="/addTag/:tagID" component={addTags} />
-          <Route path="/cart" component={Cart} />
-          <Redirect to="/productLists" />
-        </Switch>
+        <Root>
+          <Switch>
+            <Route path="/addProduct" component={addProduct} />
+            <Route path="/productLists" component={FullListView} />
+            <Route path="/product/:productID" component={ProductDetail} />
+            <Route path="/user/:userID" component={UserDetail} />
+            <PrivateRoute path="/privateLul" component={PrivateLul} />
+            <PrivateRoute path="/profile" component={Profile} />
+            <Route path="/testpage" component={TestPage} />
+            <Route path="/addTag/:tagID" component={addTags} />
+            <Route path="/cart" component={Cart} />
+            <Redirect to="/productLists" />
+          </Switch>
+        </Root>
       </Container>
     );
   }
