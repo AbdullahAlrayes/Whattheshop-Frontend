@@ -22,7 +22,7 @@ class MyHeader extends Component {
       <Header style={{}}>
         {Platform.OS !== "ios" && <StatusBar hidden={true} />}
         <LinearGradient
-          colors={["#2c3e50", "#bdc3c7"]}
+          colors={["#bdc3c7", "#2c3e50"]}
           style={{
             position: "absolute",
             left: 0,

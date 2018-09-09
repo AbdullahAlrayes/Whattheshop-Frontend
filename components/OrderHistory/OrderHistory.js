@@ -10,7 +10,13 @@ import {
 } from "react-native";
 import { observer } from "mobx-react";
 import moment from "moment";
-import { NativeRouter, Route, Link, Switch } from "react-router-native";
+import {
+  NativeRouter,
+  Route,
+  Link,
+  Switch,
+  Redirect
+} from "react-router-native";
 
 import {
   Container,
@@ -41,10 +47,14 @@ import ProductStore from "../Store/ProductStore";
 import UserStore from "../Store/UserStore";
 import CartStore from "../Store/CartStore";
 import OrderTabs from "./OrderTabs";
+import authStore from "../Store/authStore";
 
 class OrderHistory extends Component {
   render() {
-    console.log(OrderSNStore.maxOrdersForUser);
+    if (!authStore.isAuthenticated) {
+      return <Redirect to="/login" />;
+    }
+
     let ordersPrice;
     let userID = OrderSNStore.userID;
     let prodID = 0;
@@ -119,17 +129,20 @@ class OrderHistory extends Component {
         <Button full disabled light>
           <Text>
             Total Paid ={" "}
-            {OrderSNStore.filteredUserOrders[OrderSNStore.selectedOrder].price}{" "}
+            {OrderSNStore.filteredUserOrders.length > 0 &&
+              OrderSNStore.filteredUserOrders[OrderSNStore.selectedOrder]
+                .price}{" "}
             K.D.
           </Text>
         </Button>
-        <Button full disabled dark>
+        <Button full dark onPress={() => console.log(authStore.userID)}>
           <Text>
             Date Created ={" "}
-            {moment(
-              OrderSNStore.filteredUserOrders[OrderSNStore.selectedOrder]
-                .created_on
-            ).format("DD-MMM-YY")}
+            {OrderSNStore.filteredUserOrders.length > 0 &&
+              moment(
+                OrderSNStore.filteredUserOrders[OrderSNStore.selectedOrder]
+                  .created_on
+              ).format("DD-MMM-YY")}
           </Text>
         </Button>
       </Content>

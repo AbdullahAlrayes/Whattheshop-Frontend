@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Image } from "react-native";
+import { Image, ScrollView } from "react-native";
 import {
   Container,
   Header,
@@ -12,6 +12,7 @@ import {
   Icon,
   Left,
   Body,
+  View,
   Right,
   Toast,
   Badge
@@ -23,6 +24,7 @@ import ProductStore from "../Store/ProductStore";
 import CartStore from "../Store/CartStore";
 import UserStore from "../Store/UserStore";
 import { observer } from "mobx-react";
+import authStore from "../Store/authStore";
 
 class ProductDetail extends Component {
   constructor(props) {
@@ -37,9 +39,7 @@ class ProductDetail extends Component {
 
   render() {
     const product = ProductStore.products[this.props.match.params.productID];
-    const userIndex = UserStore.users.findIndex(
-      user => user.id === product.created_by.id
-    );
+
     let existingTags;
     if (product.tag.length > 0) {
       existingTags = product.tag.map((tag, index) => (
@@ -56,19 +56,17 @@ class ProductDetail extends Component {
         <Card style={{ width: "95%", alignSelf: "center" }}>
           <CardItem>
             <Left>
-              <Link to={"/user/" + userIndex}>
-                {!product.created_by.profile ||
-                !product.created_by.profile.pic ? (
-                  <Thumbnail
-                    source={{
-                      uri:
-                        "http://profilepicturesdp.com/wp-content/uploads/2018/07/empty-user-profile-picture-3-200x200.jpg"
-                    }}
-                  />
-                ) : (
-                  <Thumbnail source={{ uri: product.created_by.profile.pic }} />
-                )}
-              </Link>
+              {!product.created_by.profile ||
+              !product.created_by.profile.pic ? (
+                <Thumbnail
+                  source={{
+                    uri:
+                      "http://profilepicturesdp.com/wp-content/uploads/2018/07/empty-user-profile-picture-3-200x200.jpg"
+                  }}
+                />
+              ) : (
+                <Thumbnail source={{ uri: product.created_by.profile.pic }} />
+              )}
               <Body>
                 <Text
                   style={{
@@ -140,7 +138,9 @@ class ProductDetail extends Component {
             {"  "}
             Product Tags:
           </Text>
-          <CardItem>{existingTags}</CardItem>
+          <CardItem>
+            <ScrollView horizontal>{existingTags}</ScrollView>
+          </CardItem>
           <Text style={{ fontWeight: "bold" }}>
             {"  "}
             Quantity Remaining in Stock:
@@ -151,27 +151,37 @@ class ProductDetail extends Component {
         </Card>
         {(product.quantity > 0) & (product.status.name !== "Cancelled") ? (
           <Button
-            success
+            success={authStore.isAuthenticated}
+            light={!authStore.isAuthenticated}
             full
             onPress={() => {
-              ProductStore.removeQuantityFromProduct(product.id);
-              CartStore.addCart(product, 1);
-              console.log(CartStore.items);
-              Toast.show({
-                text: `Added ${product.name} to Cart`,
-                type: "success",
-                duration: 500,
-                position: "top"
-              });
+              if (authStore.isAuthenticated) {
+                ProductStore.removeQuantityFromProduct(product.id);
+                CartStore.addCart(product, 1);
+                console.log(CartStore.items);
+                Toast.show({
+                  text: `Added ${product.name} to Cart`,
+                  type: "success",
+                  duration: 500,
+                  position: "top"
+                });
+              } else {
+                alert("Please Login to Add Items to Cart");
+              }
             }}
           >
-            <Text>Add to Cart</Text>
+            <Text>
+              {authStore.isAuthenticated
+                ? "Add to Cart"
+                : "Login To Add To Cart"}
+            </Text>
           </Button>
         ) : (
           <Button light full>
             <Text>No more stock available</Text>
           </Button>
         )}
+        <Text> </Text>
       </Content>
     );
   }
