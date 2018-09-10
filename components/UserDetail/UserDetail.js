@@ -35,6 +35,7 @@ import ProductStore from "../Store/ProductStore";
 import { observer } from "mobx-react";
 import UserStore from "../Store/UserStore";
 import CartStore from "../Store/CartStore";
+import authStore from "../Store/authStore";
 
 class UserDetail extends Component {
   constructor(props) {
@@ -123,22 +124,31 @@ class UserDetail extends Component {
               {(product.quantity > 0) &
               (product.status.name !== "Cancelled") ? (
                 <Button
-                  success
+                  success={authStore.isAuthenticated}
+                  light={!authStore.isAuthenticated}
                   full
                   onPress={() => {
-                    ProductStore.removeQuantityFromProduct(product.id);
-                    CartStore.addCart(product, 1);
-                    console.log(CartStore.items);
+                    if (authStore.isAuthenticated) {
+                      ProductStore.removeQuantityFromProduct(product.id);
+                      CartStore.addCart(product, 1);
+                      console.log(CartStore.items);
 
-                    Toast.show({
-                      text: `Added ${product.name} to Cart`,
-                      type: "success",
-                      duration: 500,
-                      position: "top"
-                    });
+                      Toast.show({
+                        text: `Added ${product.name} to Cart`,
+                        type: "success",
+                        duration: 500,
+                        position: "top"
+                      });
+                    } else {
+                      alert("Please Login To Add To Cart");
+                    }
                   }}
                 >
-                  <Text>Add to Cart</Text>
+                  <Text>
+                    {authStore.isAuthenticated
+                      ? "Add to Cart"
+                      : "Login To Add To Cart"}
+                  </Text>
                 </Button>
               ) : (
                 <Button light full>

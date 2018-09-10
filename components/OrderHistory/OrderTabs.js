@@ -38,6 +38,7 @@ import { ListView } from "react-native";
 import OrderSNStore from "../Store/OrderSNStore";
 import UserStore from "../Store/UserStore";
 import CartStore from "../Store/CartStore";
+import moment from "moment";
 
 class OrderTabs extends Component {
   render() {
@@ -49,7 +50,10 @@ class OrderTabs extends Component {
         active={OrderSNStore.selectedOrder === index}
         onPress={() => (OrderSNStore.selectedOrder = index)}
       >
-        <Text>Order {OrderSNStore.maxOrdersForUser - index}</Text>
+        <Text>
+          Order {OrderSNStore.maxOrdersForUser - index} on{" "}
+          {moment(order.created_on).format("DD-MMM-YY")}
+        </Text>
       </Button>
     ));
 

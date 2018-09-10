@@ -3,7 +3,8 @@ import axios from "axios";
 import { StyleSheet, Text, View } from "react-native";
 //Import Stores
 import newProduct from "./AddProduct";
-
+import UserStore from "./UserStore";
+import authStore from "./authStore";
 const instance = axios.create({
   baseURL: "http://178.128.202.231"
 });
@@ -12,7 +13,7 @@ class OrdersStore {
   constructor() {
     this.orderSN = [];
     this.orders = [];
-    this.userID = 2;
+    this.userID = 1;
     this.selectedOrder = 0;
   }
 
@@ -31,6 +32,12 @@ class OrdersStore {
   }
 
   get filteredUserOrders() {
+    if (authStore.isAuthenticated) {
+      this.userID =
+        UserStore.users[
+          UserStore.users.findIndex(user => user.id === authStore.user.user_id)
+        ].id;
+    }
     return this.orders.filter(order => +order.created_by.id === +this.userID);
   }
 
@@ -58,12 +65,14 @@ class OrdersStore {
   get orderList() {
     let orderSNforOne = [];
     let indexVal;
-    this.filteredUserOrders[this.selectedOrder].orderSerialNo.forEach(
-      (SN, index) => {
-        indexVal = this.orderSN.findIndex(serial => serial.id === SN.id);
-        orderSNforOne.push(this.orderSN[indexVal].name);
-      }
-    );
+    if (this.filteredUserOrders.length > 0) {
+      this.filteredUserOrders[this.selectedOrder].orderSerialNo.forEach(
+        (SN, index) => {
+          indexVal = this.orderSN.findIndex(serial => serial.id === SN.id);
+          orderSNforOne.push(this.orderSN[indexVal].name);
+        }
+      );
+    }
     return orderSNforOne;
   }
 

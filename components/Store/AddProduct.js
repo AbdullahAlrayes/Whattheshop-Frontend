@@ -26,6 +26,7 @@ class newProduct {
     this.tagCounter = 0;
     this.tag = [];
     this.quantity = 1;
+    this.selectedProduct = 0;
   }
 
   resetPage() {
@@ -177,6 +178,7 @@ decorate(newProduct, {
   pic: observable,
   tagCounter: observable,
   tag: observable,
+  selectedProduct: observable,
   quantity: observable
 });
 

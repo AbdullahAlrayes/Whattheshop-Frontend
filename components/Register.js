@@ -12,7 +12,7 @@ import { Redirect } from "react-router-native";
 
 import { NativeRouter, Route, Link, Switch } from "react-router-native";
 
-class Login extends Component {
+class RegisterPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -26,7 +26,7 @@ class Login extends Component {
     return (
       <Form>
         <Text> </Text>
-        <Text>Write in Your Details Below:</Text>
+        <Text> Sign up by filling out the details below:</Text>
 
         <Text> </Text>
 
@@ -49,21 +49,17 @@ class Login extends Component {
           success
           full
           onPress={() =>
-            authStore.loginUser(this.state.username, this.state.password)
+            authStore.registerUser(this.state.username, this.state.password)
           }
         >
-          <Text style={{ fontWeight: "bold" }}>Login</Text>
+          <Text style={{ fontWeight: "bold" }}>Create an Account</Text>
         </Button>
         <Text> </Text>
         <Text> </Text>
         <Text> </Text>
         <Text> </Text>
-
-        <Link component={Button} to="/register" primary full>
-          <Text style={{ fontWeight: "bold" }}>Create a New Account</Text>
-        </Link>
       </Form>
     );
   }
 }
-export default observer(Login);
+export default observer(RegisterPage);

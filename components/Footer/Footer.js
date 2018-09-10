@@ -3,9 +3,12 @@ import React, { Component } from "react";
 // NativeBase
 import { Footer, FooterTab, Button, Icon, Text } from "native-base";
 import { LinearGradient } from "expo";
+import { observer } from "mobx-react";
 
 // Router
 import { Link } from "react-router-native";
+import authStore from "../Store/authStore";
+import UserStore from "../Store/UserStore";
 
 class MyFooter extends Component {
   render() {
@@ -13,7 +16,7 @@ class MyFooter extends Component {
       <Footer>
         <FooterTab>
           <LinearGradient
-            colors={["#bdc3c7", "#2c3e50"]}
+            colors={["#2c3e50", "#bdc3c7"]}
             style={{
               position: "absolute",
               left: 0,
@@ -22,21 +25,29 @@ class MyFooter extends Component {
               height: "300%"
             }}
           />
-          <Link component={Button} verticle to="/addProduct">
-            <Icon type="Entypo" name="plus" style={{ color: "white" }} />
-            <Text style={{ color: "white" }}>Add Item</Text>
-          </Link>
-          <Link component={Button} verticle to="/productList">
+
+          <Link component={Button} verticle to="/productLists">
             <Icon name="home" type="Entypo" style={{ color: "white" }} />
-            <Text style={{ color: "white" }}>My Items</Text>
+            <Text style={{ color: "white" }}>Main Store</Text>
           </Link>
-          <Link component={Button} verticle to="/orders">
+          <Link
+            component={Button}
+            verticle
+            to="/orders"
+            onPress={() => {
+              if (!authStore.isAuthenticated) {
+                alert("Please Login to View Order History");
+              }
+            }}
+          >
             <Icon name="list" type="Feather" style={{ color: "white" }} />
-            <Text style={{ color: "white" }}>Orders</Text>
+            <Text style={{ color: "white" }}>Order History</Text>
           </Link>
-          <Link component={Button} verticle to="/testpage">
+          <Link component={Button} verticle to="/login">
             <Icon name="person" style={{ color: "white" }} />
-            <Text style={{ color: "white" }}>Test</Text>
+            <Text style={{ color: "white" }}>
+              {authStore.isAuthenticated ? "Profile" : "Login"}
+            </Text>
           </Link>
         </FooterTab>
       </Footer>
@@ -44,4 +55,4 @@ class MyFooter extends Component {
   }
 }
 
-export default MyFooter;
+export default observer(MyFooter);

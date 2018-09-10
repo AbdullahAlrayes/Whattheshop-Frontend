@@ -23,7 +23,13 @@ import {
   Body,
   Right
 } from "native-base";
-import { NativeRouter, Route, Link, Switch } from "react-router-native";
+import {
+  NativeRouter,
+  Route,
+  Link,
+  Switch,
+  Redirect
+} from "react-router-native";
 
 //Store
 import ProductStore from "../Store/ProductStore";
@@ -32,6 +38,7 @@ import UserStore from "../Store/UserStore";
 import { observer } from "mobx-react";
 import CartItems from "./CartItems";
 import OrderStore from "../Store/OrderSNStore";
+import authStore from "../Store/authStore";
 
 class MyCart extends Component {
   constructor(props) {
@@ -90,6 +97,10 @@ class MyCart extends Component {
   }
 
   render() {
+    if (!authStore.isAuthenticated) {
+      alert("Please Log In to Add Items to Cart");
+      return <Redirect to="/login" />;
+    }
     let cartItemsListed;
     cartItemsListed = CartStore.items.map((item, index) => (
       <CartItems itemID={item.id} key={index} />
@@ -100,20 +111,18 @@ class MyCart extends Component {
         {CartStore.discountConfirmation > 0 && (
           <Button success full>
             <Text style={{ fontWeight: "bold" }}>
-              Successful Code = {CartStore.discountConfirmation * 100}% off
+              Discount Accepted, you get {CartStore.discountConfirmation * 100}%
+              off
             </Text>
           </Button>
         )}
+        <Button full info>
+          <Text style={{ fontWeight: "bold", fontSize: 20 }}>
+            Total Price = {CartStore.totalPrice} K.D.
+          </Text>
+        </Button>
         <ScrollView style={{ minHeight: 90 }}>
-          <Text> </Text>
-          <Text> </Text>
           {cartItemsListed}
-
-          <Button full info>
-            <Text style={{ fontWeight: "bold", fontSize: 20 }}>
-              Total Price = {CartStore.totalPrice} K.D.
-            </Text>
-          </Button>
           {CartStore.items.length > 0 ? (
             <Button
               full
@@ -156,6 +165,10 @@ class MyCart extends Component {
               </Button>
             </View>
           )}
+          <Text note>
+            Disclaimer: Due to limited quantity of sold items, the cart will not
+            save once the application is closed.
+          </Text>
         </ScrollView>
       </View>
     );

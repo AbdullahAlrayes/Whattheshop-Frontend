@@ -18,6 +18,8 @@ import UserDetail from "./UserDetail/UserDetail";
 import Cart from "./CartPage/Cart";
 import TestPage from "./TestPage";
 import OrderHistory from "./OrderHistory/OrderHistory";
+import updateProduct from "./UpdateProduct/updateProduct";
+import RegisterPage from "./Register";
 
 // Router
 import { Route, Switch, Redirect } from "react-router-native";
@@ -37,10 +39,13 @@ class MainContent extends Component {
             <Route path="/addProduct" component={addProduct} />
             <Route path="/productLists" component={FullListView} />
             <Route path="/product/:productID" component={ProductDetail} />
+            <Route path="/productupdate/:productID" component={updateProduct} />
             <Route path="/user/:userID" component={UserDetail} />
             <PrivateRoute path="/privateLul" component={PrivateLul} />
             <PrivateRoute path="/profile" component={Profile} />
-            <Route path="/testpage" component={TestPage} />
+            <Route path="/login" component={Login} />
+            <Route path="/register" component={RegisterPage} />
+
             <Route path="/orders" component={OrderHistory} />
             <Route path="/addTag/:tagID" component={addTags} />
             <Route path="/cart" component={Cart} />

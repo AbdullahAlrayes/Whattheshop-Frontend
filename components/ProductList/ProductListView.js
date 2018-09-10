@@ -29,6 +29,8 @@ import {
 import ProductStore from "../Store/ProductStore";
 import CartStore from "../Store/CartStore";
 import UsersList from "./UsersList";
+import authStore from "../Store/authStore";
+import OrderSNStore from "../Store/OrderSNStore";
 
 class ProductListView extends Component {
   constructor(props) {
@@ -60,15 +62,20 @@ class ProductListView extends Component {
             (product.quantity > 0) & (product.status.name !== "Cancelled") && (
               <Button
                 success
+                light={!authStore.isAuthenticated}
                 onPress={() => {
-                  CartStore.addCart(product, 1);
-                  ProductStore.removeQuantityFromProduct(product.id);
-                  Toast.show({
-                    text: `Added ${product.name} to Cart`,
-                    type: "success",
-                    duration: 500,
-                    position: "bottom"
-                  });
+                  if (authStore.isAuthenticated) {
+                    CartStore.addCart(product, 1);
+                    ProductStore.removeQuantityFromProduct(product.id);
+                    Toast.show({
+                      text: `Added ${product.name} to Cart`,
+                      type: "success",
+                      duration: 500,
+                      position: "bottom"
+                    });
+                  } else {
+                    alert("Login to Add To Cart");
+                  }
                 }}
               >
                 <Icon active name="add" />
@@ -117,7 +124,14 @@ class ProductListView extends Component {
               </View>
               {product.quantity === 0 ||
               product.status.name === "Cancelled" ? null : (
-                <Text>{product.quantity} remaining</Text>
+                <Text
+                  style={{
+                    fontWeight: "bold",
+                    color: product.quantity < 4 ? "red" : "black"
+                  }}
+                >
+                  {product.quantity} remaining
+                </Text>
               )}
             </Link>
           }
