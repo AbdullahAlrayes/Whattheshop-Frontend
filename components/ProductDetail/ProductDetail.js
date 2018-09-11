@@ -15,13 +15,15 @@ import {
   View,
   Right,
   Toast,
-  Badge
+  Badge,
+  Input
 } from "native-base";
 import { NativeRouter, Route, Link, Switch } from "react-router-native";
 
 //Store
 import ProductStore from "../Store/ProductStore";
 import CartStore from "../Store/CartStore";
+import UpdateProductStore from "../Store/UpdateProductStore";
 import UserStore from "../Store/UserStore";
 import { observer } from "mobx-react";
 import authStore from "../Store/authStore";
@@ -30,7 +32,9 @@ class ProductDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      product: {}
+      product: {},
+      name: ProductStore.products[this.props.match.params.productID],
+      type: ""
     };
   }
   componentDidMount() {
@@ -54,6 +58,21 @@ class ProductDetail extends Component {
     return (
       <Content>
         <Card style={{ width: "95%", alignSelf: "center" }}>
+          {product.created_by.id === UserStore.signedInUser.user_id && (
+            <Link
+              component={Button}
+              to={"/productupdate/" + this.props.match.params.productID}
+              onPress={() =>
+                UpdateProductStore.updateStoreItems(
+                  this.props.match.params.productID
+                )
+              }
+              transparent
+              full
+            >
+              <Text>Update Product</Text>
+            </Link>
+          )}
           <CardItem>
             <Left>
               {!product.created_by.profile ||

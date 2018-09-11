@@ -2,7 +2,17 @@ import React, { Component } from "react";
 import { observer } from "mobx-react";
 
 // NativeBase Components
-import { Form, Item, Input, Button, Text, Icon } from "native-base";
+import {
+  Form,
+  Item,
+  Input,
+  Button,
+  Text,
+  CheckBox,
+  Icon,
+  ListItem,
+  Body
+} from "native-base";
 
 // Store
 import authStore from "./Store/authStore";
@@ -17,8 +27,12 @@ class Login extends Component {
     super(props);
     this.state = {
       username: "",
-      password: ""
+      password: "",
+      rememberSignIn: false
     };
+  }
+  componentDidMount() {
+    authStore.checkForToken();
   }
 
   render() {
@@ -26,8 +40,10 @@ class Login extends Component {
     return (
       <Form>
         <Text> </Text>
-        <Text>Write in Your Details Below:</Text>
-
+        <Text />
+        <Button full disabled light>
+          <Text style={{ color: "black" }}>Write in Your Details Below::</Text>
+        </Button>
         <Text> </Text>
 
         <Item>
@@ -45,11 +61,27 @@ class Login extends Component {
             onChangeText={password => this.setState({ password: password })}
           />
         </Item>
+        <ListItem>
+          <CheckBox
+            checked={this.state.rememberSignIn}
+            color="green"
+            onPress={() =>
+              this.setState({ rememberSignIn: !this.state.rememberSignIn })
+            }
+          />
+          <Body>
+            <Text>Keep Me Signed In</Text>
+          </Body>
+        </ListItem>
         <Button
           success
           full
           onPress={() =>
-            authStore.loginUser(this.state.username, this.state.password)
+            authStore.loginUser(
+              this.state.username,
+              this.state.password,
+              this.state.rememberSignIn
+            )
           }
         >
           <Text style={{ fontWeight: "bold" }}>Login</Text>

@@ -45,7 +45,7 @@ class authStore {
     );
   }
 
-  loginUser(username, password) {
+  loginUser(username, password, rememberMe) {
     const userData = {
       username: username,
       password: password
@@ -56,17 +56,19 @@ class authStore {
       .then(user => {
         const { token } = user;
         // Save token to localStorage
-        AsyncStorage.setItem("jwtToken", token).then(
-          () => {
-            // Set token to Auth header
-            setAuthToken(token);
-            // Decode token to get user data
-            const decoded = jwt_decode(token);
-            // Set current user
-            this.setCurrentUser(decoded);
-          },
-          () => console.log("something went wrong with setting jwt token")
-        );
+        if (rememberMe || !rememberMe) {
+          AsyncStorage.setItem("jwtToken", token).then(
+            () => {
+              // Set token to Auth header
+              setAuthToken(token);
+              // Decode token to get user data
+              const decoded = jwt_decode(token);
+              // Set current user
+              this.setCurrentUser(decoded);
+            },
+            () => console.log("something went wrong with setting jwt token")
+          );
+        }
       })
       .then(() => console.log("success"))
       .catch(err =>
@@ -99,12 +101,7 @@ class authStore {
         );
       })
       .then(() => console.log("success"))
-      .then(() => this.loginUser(username, password))
-      .catch(err =>
-        alert(
-          "Incorrect Account, try again or register if you do not have an account."
-        )
-      );
+      .catch(err => console.log(err.response));
   }
 
   checkForToken = () => {

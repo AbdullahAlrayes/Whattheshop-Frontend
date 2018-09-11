@@ -58,8 +58,29 @@ class MyCart extends Component {
         {
           text: "Yes",
           onPress: () => {
-            console.log(this.state.finalOrderSNCombined);
-            CartStore.uploadOrder(2, this.state.finalOrderSNCombined);
+            let userID = authStore.user.user_id;
+            let userStoreIndex = UserStore.users.findIndex(
+              user => user.id === userID
+            );
+            let currentUser = UserStore.users[userStoreIndex];
+            let productObject = [];
+            let indexVal;
+            for (let i = 0; i < CartStore.items.length; i++) {
+              indexVal = ProductStore.products.findIndex(
+                product => product.id === CartStore.items[i].id
+              );
+              productObject.push({
+                id: CartStore.items[i].id,
+                remainingQuant: ProductStore.products[indexVal].quantity,
+                orderQuant: CartStore.items[i].quantity
+              });
+            }
+
+            CartStore.uploadOrder(
+              currentUser.id,
+              this.state.finalOrderSNCombined,
+              productObject
+            );
           }
         },
         {
@@ -105,7 +126,6 @@ class MyCart extends Component {
     cartItemsListed = CartStore.items.map((item, index) => (
       <CartItems itemID={item.id} key={index} />
     ));
-    console.log(this.state.maxOrderID);
     return (
       <View>
         {CartStore.discountConfirmation > 0 && (

@@ -5,6 +5,8 @@ import { NativeRouter, Route, Link, Switch } from "react-router-native";
 
 //Stores
 import ProductStore from "./ProductStore";
+import UserStore from "../Store/UserStore";
+import UsersList from "../ProductList/UsersList";
 
 const instance = axios.create({
   baseURL: "http://178.128.202.231"
@@ -99,18 +101,20 @@ class newProduct {
     } else {
       let indexVal;
       combinedTagList.forEach(element => {
-        indexVal = ProductStore.tags.findIndex(
+        indexVal = ProductStore.originalTags.findIndex(
           tag => tag.name.toLowerCase() === element.toLowerCase()
         );
-        newTagIDs.push(ProductStore.tags[indexVal].id);
+        newTagIDs.push(ProductStore.originalTags[indexVal].id);
       });
     }
 
     let typeVal;
     let newType;
 
-    typeVal = ProductStore.types.findIndex(type => type.name === this.type);
-    newType = ProductStore.types[typeVal].id;
+    typeVal = ProductStore.originalTypes.findIndex(
+      type => type.name === this.type
+    );
+    newType = ProductStore.originalTypes[typeVal].id;
     console.log(newTagIDs);
     // let statusVal = ProductStore.products.status.findIndex(
     //   stat => stat.name.toLowerCase() === this.status.toLowerCase()
@@ -135,7 +139,7 @@ class newProduct {
         status: newStatus,
         tag: newTagIDs,
         price: this.price,
-        created_by: 1
+        created_by: UserStore.signedInUser.user_id
       }
     ];
 
@@ -148,9 +152,17 @@ class newProduct {
         status: newStatus,
         tag: newTagIDs,
         price: this.price,
-        created_by: 1
+        created_by: UserStore.signedInUser.user_id,
+        quantity: this.quantity
       })
-      .then(response => console.log("success"))
+      .then(response => {
+        ProductStore.fetchProducts();
+        ProductStore.fetchTags();
+        ProductStore.fetchStatus();
+        ProductStore.fetchTypes();
+        console.log("success");
+        history.goBack();
+      })
       .catch(err => console.log(err.response));
   }
   updateStore(name, description, status, type, price, tags, pic) {

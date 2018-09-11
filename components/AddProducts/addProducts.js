@@ -93,6 +93,16 @@ class addProduct extends Component {
       });
     }
   }
+
+  uploadImage() {
+    const formData = new FormData();
+    formData.append("upload", {
+      uri: this.state.image,
+      name: this.state.name + ".png",
+      type: "image/png"
+    });
+  }
+
   render() {
     let { image } = this.state;
 
@@ -102,6 +112,9 @@ class addProduct extends Component {
 
     return (
       <ScrollView>
+        <Button full disabled light>
+          <Text>Create a New Product</Text>
+        </Button>
         <Card style={{ width: "95%", alignSelf: "center" }}>
           <Text style={{ fontWeight: "bold" }}>{""}</Text>
           <Text style={{ fontWeight: "bold" }}>Product Name:</Text>
@@ -182,7 +195,7 @@ class addProduct extends Component {
               } else if (newProduct.status === "" || newProduct.price === 0) {
                 alert("Product Price cannot be blank or 0");
               } else {
-                newProduct.postProduct();
+                newProduct.postProduct(this.props.history);
               }
             }}
           >

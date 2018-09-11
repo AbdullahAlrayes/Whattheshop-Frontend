@@ -5,14 +5,16 @@ import {
   Left,
   Body,
   Right,
+  Text,
   Button,
   Item,
   Icon,
   Input,
   Title
 } from "native-base";
-import { Platform, StatusBar } from "react-native";
+import { Platform, StatusBar, Image } from "react-native";
 import { LinearGradient } from "expo";
+import logoHeader from "./logoHeader.png";
 
 import { withRouter, Link } from "react-router-native";
 
@@ -22,7 +24,7 @@ class MyHeader extends Component {
       <Header style={{}}>
         {Platform.OS !== "ios" && <StatusBar hidden={true} />}
         <LinearGradient
-          colors={["#bdc3c7", "#2c3e50"]}
+          colors={["#000000", "#000000"]}
           style={{
             position: "absolute",
             left: 0,
@@ -35,11 +37,10 @@ class MyHeader extends Component {
           <Button onPress={() => this.props.history.goBack()} transparent>
             <Icon name="arrow-back" active style={{ color: "white" }} />
           </Button>
+          <Text> </Text>
         </Left>
         <Body>
-          <Title style={{ color: "white", alignSelf: "center" }}>
-            Every Shop
-          </Title>
+          <Image source={logoHeader} style={{ width: 200, height: 40 }} />
         </Body>
         <Right>
           <Link component={Button} transparent to="/cart">

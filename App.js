@@ -8,6 +8,7 @@ import {
   Text,
   View
 } from "react-native";
+import { AsyncStorage } from "react-native";
 
 // Component
 import MainContent from "./components/MainContent";
@@ -35,7 +36,7 @@ class App extends Component {
     this.state = {
       fontsReady: false,
       ready: true,
-      moveOn: false
+      moveOn: true
     };
   }
 

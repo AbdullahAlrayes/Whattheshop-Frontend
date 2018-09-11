@@ -87,7 +87,7 @@ class OrdersStore {
             else return 0;
           }))
       )
-      .catch(err => console.error(err));
+      .catch(err => console.log(err));
   }
 }
 decorate(OrdersStore, {

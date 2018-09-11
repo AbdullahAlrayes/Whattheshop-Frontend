@@ -46,10 +46,10 @@ class CartsStore {
     return instance
       .post("api/order-serial-no/create/", { name: orderSN })
       .then(response => console.log("success"))
-      .catch(err => console.log(err));
+      .catch(err => console.log(err.response));
   }
 
-  uploadOrder(userID, orderSNList) {
+  uploadOrder(userID, orderSNList, productObject) {
     return instance
       .post("api/orders/create/", {
         price: +this.totalPrice,
@@ -59,11 +59,21 @@ class CartsStore {
         orderSerialNo: orderSNList
       })
       .then(response => console.log("success"))
+      .then(response => {
+        for (let i = 0; i < productObject.length; i++) {
+          ProductStore.removeItemsPutRequest(
+            productObject[i].id,
+            productObject[i].remainingQuant,
+            productObject[i].orderQuant
+          );
+        }
+      })
       .then(() => {
-        this.resetCart();
         OrderStore.fetchOrderSNs();
         OrderStore.fetchOrderHistory();
+        ProductStore.fetchProducts();
       })
+      .then(() => (this.items = []))
       .catch(err => console.log(err.response));
   }
 

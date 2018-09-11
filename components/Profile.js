@@ -97,7 +97,7 @@ class Profile extends Component {
                 to={
                   "/product/" +
                   ProductStore.products.findIndex(
-                    product => product.id === index
+                    prod => product.id === prod.id
                   )
                 }
                 transparent
@@ -181,22 +181,33 @@ class Profile extends Component {
       <View>
         <Button
           full
-          warning
+          warning={this.state.update === false}
+          success={this.state.update === true}
           onPress={() => {
             if (this.state.update === true) {
-              UserStore.updateUserDetails(
-                UserStore.users[
-                  UserStore.users.findIndex(
-                    user => user.id === authStore.user.user_id
-                  )
-                ].username,
-                this.state.first_name,
-                this.state.last_name,
-                this.state.email,
-                authStore.user.user_id
-              );
+              if (
+                this.state.first_name === "" ||
+                this.state.last_name === "" ||
+                this.state.email === ""
+              ) {
+                alert("Please update all fields below");
+              } else {
+                UserStore.updateUserDetails(
+                  UserStore.users[
+                    UserStore.users.findIndex(
+                      user => user.id === authStore.user.user_id
+                    )
+                  ].username,
+                  this.state.first_name,
+                  this.state.last_name,
+                  this.state.email,
+                  authStore.user.user_id
+                );
+                this.setState({ update: !this.state.update });
+              }
+            } else {
+              this.setState({ update: !this.state.update });
             }
-            this.setState({ update: !this.state.update });
           }}
         >
           <Text>
@@ -234,7 +245,6 @@ class Profile extends Component {
                 value={currentUser.email}
                 onChangeText={value => {
                   this.setState({ email: value });
-                  console.log(this.state.email);
                 }}
               />
             </Item>
@@ -252,10 +262,8 @@ class Profile extends Component {
         </Button>
 
         {productList}
-        <Link to={"/addProduct"}>
-          <Button full success>
-            <Text>Add Products</Text>
-          </Button>
+        <Link to={"/addProduct"} component={Button} full success>
+          <Text>Add Products</Text>
         </Link>
         <Button full danger onPress={() => authStore.logoutUser()}>
           <Text>Logout</Text>

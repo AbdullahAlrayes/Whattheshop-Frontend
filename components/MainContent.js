@@ -14,6 +14,7 @@ import ProductListView from "./ProductList/ProductListView";
 import FullListView from "./ProductList/FullListView";
 import ProductDetail from "./ProductDetail/ProductDetail";
 import addTags from "./AddProducts/addTags";
+import addTags2 from "./UpdateProduct/addTags";
 import UserDetail from "./UserDetail/UserDetail";
 import Cart from "./CartPage/Cart";
 import TestPage from "./TestPage";
@@ -48,6 +49,7 @@ class MainContent extends Component {
 
             <Route path="/orders" component={OrderHistory} />
             <Route path="/addTag/:tagID" component={addTags} />
+            <Route path="/addTag2/:tagID" component={addTags2} />
             <Route path="/cart" component={Cart} />
             <Redirect to="/productLists" />
           </Switch>
