@@ -8,6 +8,7 @@ import {
   Text,
   View
 } from "react-native";
+import { AsyncStorage } from "react-native";
 
 // Component
 import MainContent from "./components/MainContent";

@@ -89,7 +89,7 @@ class UsersList extends Component {
       userList = <Text>Loading Users...</Text>;
     }
 
-    return <View>{userList}</View>;
+    return <Container>{userList}</Container>;
   }
 }
 

@@ -4,6 +4,7 @@ import axios from "axios";
 //Import Stores
 import newProduct from "./AddProduct";
 import authStore from "./authStore";
+import { first } from "rxjs/operators";
 
 const instance = axios.create({
   baseURL: "http://178.128.202.231"
@@ -18,7 +19,6 @@ class UsersStore {
 
   userSearch(value) {
     this.userQuery = value;
-    console.log(this.userQuery);
   }
   fetchUsers() {
     return instance
@@ -29,13 +29,17 @@ class UsersStore {
   }
 
   updateUserDetails(username, firstname, lastname, email, userid) {
-    let indexVal = this.users.findIndex(user => user.id === userid);
-
     return instance
-      .post("api/users/" + indexVal)
+      .put("api/users/update/" + userid, {
+        first_name: firstname,
+        last_name: lastname,
+        email: email,
+        username: username
+      })
       .then(res => res.data)
       .then(res => alert("User Information Updated"))
       .then(res => this.fetchUsers())
+      .then(res => console.log("success"))
       .catch(err => console.log(err.response));
   }
 

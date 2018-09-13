@@ -26,7 +26,9 @@ class RegisterPage extends Component {
     return (
       <Form>
         <Text> </Text>
-        <Text> Sign up by filling out the details below:</Text>
+        <Button full disabled light>
+          <Text>Sign up by filling out the details below:</Text>
+        </Button>
 
         <Text> </Text>
 

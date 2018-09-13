@@ -5,72 +5,60 @@ import { NativeRouter, Route, Link, Switch } from "react-router-native";
 
 //Stores
 import ProductStore from "./ProductStore";
-import UserStore from "../Store/UserStore";
-import UsersList from "../ProductList/UsersList";
+import UserStore from "./UserStore";
 
 const instance = axios.create({
   baseURL: "http://178.128.202.231"
 });
 
-class newProduct {
+class updateProductStore {
   constructor() {
     this.name = "";
     this.description = "";
     this.status = "Available";
     this.type = "";
     this.price = 0;
-    this.created_by = "Admin";
-    this.updated_by = "Admin";
-    this.created_on = "";
-    this.updated_on = "";
-    this.pic = "";
-    this.sendobject = [];
-    this.tagCounter = 0;
+    this.quantity = 0;
     this.tag = [];
-    this.quantity = 1;
-    this.selectedProduct = 0;
-  }
-
-  resetPage() {
-    this.name = "";
-    this.description = "";
-    this.status = "Available";
-    this.type = "";
-    this.price = 0;
-    this.created_by = "Admin";
-    this.updated_by = "Admin";
-    this.created_on = "";
-    this.updated_on = "";
-    this.pic = "";
-    this.sendobject = [];
     this.tagCounter = 0;
+    this.pic = "";
+    this.prodID = 0;
+  }
+
+  updateStoreItems(prodID) {
     this.tag = [];
-    this.quantity = 1;
+    this.name = ProductStore.products[prodID].name;
+    this.description = ProductStore.products[prodID].description;
+    this.status = ProductStore.products[prodID].status.name;
+    this.type = ProductStore.products[prodID].type.name;
+    this.price = +ProductStore.products[prodID].price;
+    this.pic = ProductStore.products[prodID].pic;
+    this.quantity = +ProductStore.products[prodID].quantity;
+    ProductStore.products[prodID].tag.map((tag, index) =>
+      this.tag.push(tag.name)
+    );
+    this.tagCounter = this.tag.length;
+    this.prodID = ProductStore.products[prodID].id;
   }
 
-  nameChange(value: string) {
-    this.name = value;
+  nameChange(inputVal) {
+    this.name = inputVal;
   }
-  descriptionChange(value: string) {
-    this.description = value;
+  descriptionChange(inputVal) {
+    this.description = inputVal;
   }
-  statusChange(value: string) {
-    this.status = value;
+  statusChange(inputVal) {
+    this.status = inputVal;
   }
-  priceChange(value: string) {
-    this.price = value;
+  typeChange(inputVal) {
+    this.type = inputVal;
   }
-  typeChange(value: string) {
-    this.type = value;
+  priceChange(inputVal) {
+    this.price = inputVal;
   }
-  quantityChange(value) {
-    this.quantity += value;
+  quantityChange(inputVal) {
+    this.quantity += inputVal;
   }
-
-  updateQuantity(value) {
-    this.quantity += value;
-  }
-
   addTag(value) {
     this.tag.push(value);
     this.tagCounter += 1;
@@ -81,11 +69,7 @@ class newProduct {
     this.tagCounter -= 1;
   }
 
-  picChange(value: string) {
-    this.pic = value;
-  }
-
-  postProduct(history, imageUpload) {
+  putProduct(history, imageUpload) {
     let newTagIDs = [];
     let combinedTagList = [];
     let combinedTagsCheck = this.tag.join("");
@@ -110,20 +94,20 @@ class newProduct {
 
     let typeVal;
     let newType;
-
     typeVal = ProductStore.originalTypes.findIndex(
       type => type.name === this.type
     );
     newType = ProductStore.originalTypes[typeVal].id;
-    console.log(newTagIDs);
     // let statusVal = ProductStore.products.status.findIndex(
     //   stat => stat.name.toLowerCase() === this.status.toLowerCase()
     // );
     // let newStatus = ProductStore.products.status[statusVal].id;
     let newStatus;
-    if ((this.status = "Available")) {
+    if (this.status === "Available") {
       newStatus = 2;
-    } else if ((this.status = "Sold")) {
+    } else if (this.status === "Sold") {
+      newStatus = 1;
+    } else {
       newStatus = 1;
     }
     if (this.pic === "") {
@@ -139,11 +123,12 @@ class newProduct {
         status: newStatus,
         tag: newTagIDs,
         price: this.price,
-        created_by: UserStore.signedInUser.user_id
+        created_by: UserStore.signedInUser.user_id,
+        pic: imageUpload
       }
     ];
-
     const data = new FormData();
+
     data.append("name", this.name);
     data.append("description", this.description);
     data.append("type", newType);
@@ -160,14 +145,15 @@ class newProduct {
     if (imageUpload !== null) {
       data.append("pic", {
         uri: imageUpload,
-        name: "image" + this.name + "image.png",
+        name: "image" + this.prodID + "image.png",
         type: "image/png"
       });
     }
 
     console.log("---------------------------------");
+    console.log(data);
     return instance
-      .post("api/products/create/", data)
+      .put("/api/products/update/" + this.prodID, data)
       .then(res => res.data)
       .then(res => console.log("success"))
       .then(res => {
@@ -181,11 +167,15 @@ class newProduct {
       })
       .catch(err => console.log(err.response));
 
+    //     fetch("http://178.128.202.231api/products/update/" + this.prodID, {
+    //       method: "PUT",
+    //       body: data
+    //     });
+
     // return instance
-    //   .post("api/products/create/", {
+    //   .put("api/products/update/" + this.prodID, {
     //     name: this.name,
     //     description: this.description,
-    //     pic: this.pic,
     //     type: newType,
     //     status: newStatus,
     //     tag: newTagIDs,
@@ -198,38 +188,21 @@ class newProduct {
     //     ProductStore.fetchTags();
     //     ProductStore.fetchStatus();
     //     ProductStore.fetchTypes();
+
     //     console.log("success");
     //     history.goBack();
     //   })
     //   .catch(err => console.log(err.response));
   }
-  updateStore(name, description, status, type, price, tags, pic) {
-    this.name = name;
-    this.description = description;
-    this.type = type;
-    this.status = status;
-    this.price = price;
-    this.tags = tags;
-    this.pic = pic;
-    this.postProduct();
-  }
 }
-decorate(newProduct, {
+decorate(updateProductStore, {
   name: observable,
   description: observable,
   status: observable,
   type: observable,
-  tag: observable,
   price: observable,
-  created_by: observable,
-  updated_by: observable,
-  created_on: observable,
-  updated_on: observable,
-  pic: observable,
-  tagCounter: observable,
+  quantity: observable,
   tag: observable,
-  selectedProduct: observable,
-  quantity: observable
+  prodID: observable
 });
-
-export default new newProduct();
+export default new updateProductStore();

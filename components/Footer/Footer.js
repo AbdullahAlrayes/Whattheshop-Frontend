@@ -16,7 +16,7 @@ class MyFooter extends Component {
       <Footer>
         <FooterTab>
           <LinearGradient
-            colors={["#2c3e50", "#bdc3c7"]}
+            colors={["#353c42", "#000000"]}
             style={{
               position: "absolute",
               left: 0,
@@ -25,7 +25,6 @@ class MyFooter extends Component {
               height: "300%"
             }}
           />
-
           <Link component={Button} verticle to="/productLists">
             <Icon name="home" type="Entypo" style={{ color: "white" }} />
             <Text style={{ color: "white" }}>Main Store</Text>
