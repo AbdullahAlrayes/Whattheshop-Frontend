@@ -77,11 +77,13 @@ class Login extends Component {
           success
           full
           onPress={() =>
-            authStore.loginUser(
-              this.state.username,
-              this.state.password,
-              this.state.rememberSignIn
-            )
+            authStore
+              .loginUser(
+                this.state.username,
+                this.state.password,
+                this.state.rememberSignIn
+              )
+              .then(() => this.props.history.push("/"))
           }
         >
           <Text style={{ fontWeight: "bold" }}>Login</Text>
