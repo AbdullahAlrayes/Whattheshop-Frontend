@@ -50,7 +50,7 @@ class authStore {
       username: username,
       password: password
     };
-    instance
+    return instance
       .post("/api/login/", userData)
       .then(res => res.data)
       .then(user => {
