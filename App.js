@@ -36,7 +36,7 @@ class App extends Component {
     this.state = {
       fontsReady: false,
       ready: true,
-      moveOn: true
+      moveOn: false
     };
   }
 

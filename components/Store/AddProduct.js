@@ -85,7 +85,7 @@ class newProduct {
     this.pic = value;
   }
 
-  postProduct() {
+  postProduct(history, imageUpload) {
     let newTagIDs = [];
     let combinedTagList = [];
     let combinedTagsCheck = this.tag.join("");
@@ -143,27 +143,65 @@ class newProduct {
       }
     ];
 
+    const data = new FormData();
+    data.append("name", this.name);
+    data.append("description", this.description);
+    data.append("type", newType);
+    data.append("status", newStatus);
+    data.append("quantity", this.quantity);
+    // data.append("tag", newTagIDs);
+
+    for (var i = 0; i < newTagIDs.length; i++) {
+      data.append("tag", newTagIDs[i]);
+    }
+
+    data.append("price", this.price);
+    data.append("created_by", UserStore.signedInUser.user_id);
+    if (imageUpload !== null) {
+      data.append("pic", {
+        uri: imageUpload,
+        name: "image" + this.name + "image.png",
+        type: "image/png"
+      });
+    }
+
+    console.log("---------------------------------");
     return instance
-      .post("api/products/create/", {
-        name: this.name,
-        description: this.description,
-        pic: this.pic,
-        type: newType,
-        status: newStatus,
-        tag: newTagIDs,
-        price: this.price,
-        created_by: UserStore.signedInUser.user_id,
-        quantity: this.quantity
-      })
-      .then(response => {
+      .post("api/products/create/", data)
+      .then(res => res.data)
+      .then(res => console.log("success"))
+      .then(res => {
         ProductStore.fetchProducts();
         ProductStore.fetchTags();
         ProductStore.fetchStatus();
         ProductStore.fetchTypes();
+
         console.log("success");
         history.goBack();
       })
       .catch(err => console.log(err.response));
+
+    // return instance
+    //   .post("api/products/create/", {
+    //     name: this.name,
+    //     description: this.description,
+    //     pic: this.pic,
+    //     type: newType,
+    //     status: newStatus,
+    //     tag: newTagIDs,
+    //     price: this.price,
+    //     created_by: UserStore.signedInUser.user_id,
+    //     quantity: this.quantity
+    //   })
+    //   .then(response => {
+    //     ProductStore.fetchProducts();
+    //     ProductStore.fetchTags();
+    //     ProductStore.fetchStatus();
+    //     ProductStore.fetchTypes();
+    //     console.log("success");
+    //     history.goBack();
+    //   })
+    //   .catch(err => console.log(err.response));
   }
   updateStore(name, description, status, type, price, tags, pic) {
     this.name = name;

@@ -33,7 +33,9 @@ import {
   Link,
   Switch
 } from "react-router-native";
+
 import { ScrollView } from "react-native-gesture-handler";
+import UpdateProductStore from "./Store/UpdateProductStore";
 
 class Profile extends Component {
   constructor(props) {
@@ -84,7 +86,16 @@ class Profile extends Component {
                 <Button
                   danger
                   onPress={() => {
-                    alert("Delete Item Here");
+                    let indexVal = ProductStore.products.findIndex(
+                      prod => prod.id === product.id
+                    );
+
+                    UpdateProductStore.updateStoreItems(indexVal);
+                    UpdateProductStore.status = "Sold";
+                    UpdateProductStore.putProduct(
+                      this.props.history,
+                      product.pic
+                    );
                   }}
                 >
                   <Icon name="trash" />
@@ -260,14 +271,15 @@ class Profile extends Component {
         <Button full transparent>
           <Text />
         </Button>
-
-        {productList}
-        <Link to={"/addProduct"} component={Button} full success>
-          <Text>Add Products</Text>
-        </Link>
-        <Button full danger onPress={() => authStore.logoutUser()}>
-          <Text>Logout</Text>
-        </Button>
+        <ScrollView>
+          {productList}
+          <Link to={"/addProduct"} component={Button} full success>
+            <Text>Add Products</Text>
+          </Link>
+          <Button full danger onPress={() => authStore.logoutUser()}>
+            <Text>Logout</Text>
+          </Button>
+        </ScrollView>
       </View>
     );
   }

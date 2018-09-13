@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { observer } from "mobx-react";
 import { NativeRouter, Route, Link, Switch } from "react-router-native";
 
-import { ListView, ScrollView } from "react-native";
+import { ListView } from "react-native";
 import {
   Container,
   Header,
@@ -27,6 +27,7 @@ import {
   Text,
   Badge
 } from "native-base";
+import { ScrollView } from "react-native-gesture-handler";
 
 //Import Product Store
 import ProductStore from "../Store/ProductStore";

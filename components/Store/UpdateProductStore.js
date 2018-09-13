@@ -103,16 +103,16 @@ class updateProductStore {
     // );
     // let newStatus = ProductStore.products.status[statusVal].id;
     let newStatus;
-    if ((this.status = "Available")) {
+    if (this.status === "Available") {
       newStatus = 2;
-    } else if ((this.status = "Sold")) {
+    } else if (this.status === "Sold") {
+      newStatus = 1;
+    } else {
       newStatus = 1;
     }
     if (this.pic === "") {
       this.pic = undefined;
     }
-
-    const data = new FormData();
 
     this.sendobject = [
       {
@@ -127,21 +127,50 @@ class updateProductStore {
         pic: imageUpload
       }
     ];
+    const data = new FormData();
 
-    data.append("upload", this.sendobject);
-    // data.append("image", {
-    //   uri: imageUpload,
-    //   name: this.prodID + "image",
-    //   type: "image/png"
-    // });
+    data.append("name", this.name);
+    data.append("description", this.description);
+    data.append("type", newType);
+    data.append("status", newStatus);
+    data.append("quantity", this.quantity);
+    // data.append("tag", newTagIDs);
 
-    console.log(this.prodID);
-    console.log(this.sendobject);
+    for (var i = 0; i < newTagIDs.length; i++) {
+      data.append("tag", newTagIDs[i]);
+    }
 
-    fetch("http://178.128.202.231api/products/update/" + this.prodID, {
-      method: "PUT",
-      body: data
-    });
+    data.append("price", this.price);
+    data.append("created_by", UserStore.signedInUser.user_id);
+    if (imageUpload !== null) {
+      data.append("pic", {
+        uri: imageUpload,
+        name: "image" + this.prodID + "image.png",
+        type: "image/png"
+      });
+    }
+
+    console.log("---------------------------------");
+    console.log(data);
+    return instance
+      .put("/api/products/update/" + this.prodID, data)
+      .then(res => res.data)
+      .then(res => console.log("success"))
+      .then(res => {
+        ProductStore.fetchProducts();
+        ProductStore.fetchTags();
+        ProductStore.fetchStatus();
+        ProductStore.fetchTypes();
+
+        console.log("success");
+        history.goBack();
+      })
+      .catch(err => console.log(err.response));
+
+    //     fetch("http://178.128.202.231api/products/update/" + this.prodID, {
+    //       method: "PUT",
+    //       body: data
+    //     });
 
     // return instance
     //   .put("api/products/update/" + this.prodID, {

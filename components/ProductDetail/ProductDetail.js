@@ -62,15 +62,15 @@ class ProductDetail extends Component {
             <Link
               component={Button}
               to={"/productupdate/" + this.props.match.params.productID}
+              full
+              warning
               onPress={() =>
                 UpdateProductStore.updateStoreItems(
                   this.props.match.params.productID
                 )
               }
-              transparent
-              full
             >
-              <Text>Update Product</Text>
+              <Text style={{ fontWeight: "bold" }}>Update Product</Text>
             </Link>
           )}
           <CardItem>

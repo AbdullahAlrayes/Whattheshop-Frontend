@@ -25,7 +25,7 @@ import { Image, CameraRoll } from "react-native";
 import { observer } from "mobx-react";
 import { NativeRouter, Route, Link, Switch } from "react-router-native";
 import { ListView } from "react-native";
-import { ImagePicker, Permissions } from "expo";
+import { ImagePicker, Permissions, ImageManipulator } from "expo";
 
 //Options:
 var BUTTONS = ["Yes, Delete!", "Cancel"];
@@ -163,13 +163,9 @@ class UpdateProduct extends Component {
             <Text>Upload Image</Text>
           )}
         </Button>
+
         {this.state.image && (
-          <View>
-            <Button onPress={() => this.uploadImage()}>
-              <Text>Send Image Details</Text>
-            </Button>
-            <Image source={{ uri: this.state.image }} style={{ height: 200 }} />
-          </View>
+          <Image source={{ uri: this.state.image }} style={{ height: 200 }} />
         )}
 
         <Text> </Text>
@@ -204,11 +200,12 @@ class UpdateProduct extends Component {
         <Button
           full
           danger
-          onPress={() =>
+          onPress={() => {
             UpdateProductStore.updateStoreItems(
               this.props.match.params.productID
-            )
-          }
+            );
+            this.props.history.goBack();
+          }}
         >
           <Text>Reset Page</Text>
         </Button>
@@ -219,10 +216,20 @@ class UpdateProduct extends Component {
   _pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync();
 
+    if (!result.cancelled) {
+      this.setState({ image: result.uri });
+      // CameraRoll.saveToCameraRoll(result.uri);
+    }
+  };
+  _pickCamera = async () => {
+    let result = await ImagePicker.launchCameraAsync({
+      allowsEditing: true,
+      aspect: [4, 3]
+    });
+
     console.log(result);
     if (!result.cancelled) {
       this.setState({ image: result.uri });
-      CameraRoll.saveToCameraRoll(result.uri);
     }
   };
 
@@ -234,6 +241,16 @@ class UpdateProduct extends Component {
   _reqCameraRollPermissions = async () => {
     const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
     this.setState({ cameraRollPermission: status });
+  };
+  _takePicture = async () => {
+    let result = await ImagePicker.launchCameraAsync();
+    // let result = await ImagePicker.launchImageLibraryAsync();
+
+    console.log(result);
+    if (!result.cancelled) {
+      this.setState({ image: result.uri });
+      CameraRoll.saveToCameraRoll(result.uri);
+    }
   };
 }
 export default observer(UpdateProduct);

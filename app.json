@@ -1,5 +1,15 @@
 {
   "expo": {
-    "sdkVersion": "27.0.0"
+    "name": "Every Store",
+    "icon": "./components/SplashScreen/Logo.png",
+    "version": "1.0.1",
+    "slug": "every-store-kuwait",
+    "sdkVersion": "27.0.0",
+    "ios": {
+      "bundleIdentifier": "com.codedexample.everystorekuwait"
+    },
+    "android": {
+      "package": "com.codedexample.everystorekuwait"
+    }
   }
 }

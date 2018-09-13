@@ -48,10 +48,6 @@ class MyFooter extends Component {
               {authStore.isAuthenticated ? "Profile" : "Login"}
             </Text>
           </Link>
-          <Link component={Button} verticle to="/productupdate/0">
-            <Icon name="trash" style={{ color: "white" }} />
-            <Text style={{ color: "white" }}>Testing Page</Text>
-          </Link>
         </FooterTab>
       </Footer>
     );

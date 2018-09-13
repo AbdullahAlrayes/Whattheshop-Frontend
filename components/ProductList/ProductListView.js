@@ -31,6 +31,7 @@ import CartStore from "../Store/CartStore";
 import UsersList from "./UsersList";
 import authStore from "../Store/authStore";
 import OrderSNStore from "../Store/OrderSNStore";
+import { ScrollView } from "react-native-gesture-handler";
 
 class ProductListView extends Component {
   constructor(props) {
@@ -148,7 +149,60 @@ class ProductListView extends Component {
       productList = <Text>Loading Products...</Text>;
     }
 
-    return <View>{productList}</View>;
+    return (
+      <View>
+        {productList}
+
+        <SwipeRow
+          disableRightSwipe
+          disableLeftSwipe
+          leftOpenValue={0}
+          rightOpenValue={0}
+          left={<Button disabled />}
+          body={
+            <Button transparent>
+              <View>
+                <Text> </Text>
+                <Text note> </Text>
+              </View>
+            </Button>
+          }
+          right={<Button disabled warning />}
+        />
+        <SwipeRow
+          disableRightSwipe
+          disableLeftSwipe
+          leftOpenValue={0}
+          rightOpenValue={0}
+          left={<Button disabled />}
+          body={
+            <Button transparent>
+              <View>
+                <Text> </Text>
+                <Text note> </Text>
+              </View>
+            </Button>
+          }
+          right={<Button disabled warning />}
+        />
+        <SwipeRow
+          disableRightSwipe
+          disableLeftSwipe
+          leftOpenValue={0}
+          rightOpenValue={0}
+          left={<Button disabled />}
+          body={
+            <Button transparent>
+              <View>
+                <Text> </Text>
+                <Text note> </Text>
+              </View>
+            </Button>
+          }
+          right={<Button disabled warning />}
+        />
+      </View>
+    );
   }
 }
 

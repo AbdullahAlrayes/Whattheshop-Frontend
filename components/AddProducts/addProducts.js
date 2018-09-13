@@ -195,7 +195,7 @@ class addProduct extends Component {
               } else if (newProduct.status === "" || newProduct.price === 0) {
                 alert("Product Price cannot be blank or 0");
               } else {
-                newProduct.postProduct(this.props.history);
+                newProduct.postProduct(this.props.history, this.state.image);
               }
             }}
           >
@@ -214,8 +214,6 @@ class addProduct extends Component {
 
   _pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync();
-
-    console.log(result);
     if (!result.cancelled) {
       this.setState({ image: result.uri });
       CameraRoll.saveToCameraRoll(result.uri);

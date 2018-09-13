@@ -64,7 +64,7 @@ export default class ImagePickerExample extends React.Component {
             this.state.cameraPermission = {"" + this.state.cameraPermission}
           </Text>
           <Text>
-            this.state.cameraRollPermission ={" "}
+            this.state.cameraRollPermission =
             {"" + this.state.cameraRollPermission}
           </Text>
         </View>
